@@ -1,0 +1,42 @@
+<script type="text/javascript">
+
+	google.load("visualization", "1", {packages:["corechart"]});
+	google.setOnLoadCallback(drawChart);
+
+	function drawChart() {
+		
+		var jsonData
+		array = new Array( {{ json_Call_data|safe }} )
+		for (var i = 0; i < array.length; i++) {
+		jsonData = array[i];
+	}
+	// count
+	count = 0
+	for (var key in jsonData) {
+		count++;
+	}
+		
+	var data = new google.visualization.DataTable();
+
+	data.addColumn("string", "Phone Number");
+	data.addColumn("number", "Number of Times");
+
+	data.addRows( count );
+	i = 0
+	for (var key in jsonData) {
+		data.setCell(i, 0, key)
+		data.setCell(i, 1, jsonData[key])
+		i++
+	}
+
+	var options = {
+	  title: ''
+	};
+
+	var chart = new google.visualization.PieChart(document.getElementById('Callspiechart'));
+
+	chart.draw(data, options);
+	}
+  </script>
+
+  <div id="Callspiechart" style="width: 480px; height:300px;" ></div>

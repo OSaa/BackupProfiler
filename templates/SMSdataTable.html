@@ -1,0 +1,25 @@
+<script>
+	$(document).ready(function() {
+		var jsonTableData
+	  	array2 = new Array( {{ json_SMS_Table_Data|safe }} )
+
+	  	if (array2.length > 0){
+		  	for (var i = 0; i < array2.length; i++) {
+				jsonTableData = array2[i];
+			}
+		}
+	    
+	    $('#SMStable').dataTable( {
+	        "data": jsonTableData,
+	        "columns": [
+	            { "title": "Name" },
+	            { "title": "Phone Number" },
+	            { "title": "Sent/Received" },
+	            { "title": "Date/Time" },
+	            { "title": "Text Message"}
+	        ]
+	    } );   
+	} );
+</script>
+
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="SMStable"></table>

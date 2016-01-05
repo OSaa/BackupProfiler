@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html>
+	{% include "dependencies.html" %}
+	<head>
+		{% load staticfiles %}
+		<script src="{% static 'bootstrap/js/bootstrap-2-1-0.min.js' %}" type="text/javascript"></script>
+	</head>
+	<script>
+		$( document ).ready(function() {
+			$('ul.nav-tabs li a').click(function (e) {
+				$('ul.nav-tabs li.active').removeClass('active')
+				$(this).parent('li').addClass('active')
+			})
+
+			$(function () {
+				var date = new Date();
+				var d = date.getDate();
+				var m = date.getMonth();
+				var y = date.getFullYear();
+				
+				$('#calendar').fullCalendar({
+					header: {
+						left: 'prev,next today',
+						center: 'title',
+						right: 'month,agendaWeek,agendaDay'
+					},
+					editable: true,
+					eventSources: [{
+						events: {{jsonCalendarJSON|safe}},
+						color: 'red'
+					}],
+			        eventClick:  function(event, jsEvent, view) {
+			            $('#modalTitle').html(event.title);
+			            $('#modalBody').html("<p style='text-align:left;padding-left:1em;'><b>Description:</b> " + event.description + "<br/><b>Location:</b> " + event.location +"<br/><b>Start Timezone:</b> " + event.start_timezone + "<br/><b>End Timezone:</b> " + event.end_timezone + "<br/><b>Calendar Type:</b> " + event.calendar_type + "<br/><b>Event Owner Email: </b> " + event.ownerEmail + "</p>");
+			            $('#fullCalModal').modal();
+			        }
+					
+				});
+			});
+		});
+	</script>
+    <body>
+    	{% include "nav.html" %}
+
+		<div class="container-fluid">
+		      
+		      <div class="row row-offcanvas row-offcanvas-left">
+		        
+		         <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+		           
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'overview' %}">Overview</a></li>
+		              <li><a href="{% url 'top10' %}">Top 10</a></li>
+		              <li><a href="{% url 'smsdata' %}">SMS Data</a></li>
+		              <li><a href="{% url 'calldata' %}">Call Data</a></li>
+		              <li class="active"><a href="{% url 'calendardata' %}">Calendar Data</a></li>
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'appdata' %}">App Data</a></li>
+		              <li><a href="{% url 'appspecific' %}">App Specifics</a></li>
+		              <li><a href="{% url 'accounts' %}">Accounts</a></li>
+		              <li><a href="{% url 'appplists' %}">App Plists</a></li>
+		            </ul>
+		            {% if wifiData or keychainData %}
+		            <ul class="nav nav-sidebar">
+		              {% if wifiData %}
+		              <li><a href="{% url 'wifi' %}">WiFi</a></li>
+			          {% endif %}
+			          {% if keychainData %}
+		              <li><a href="{% url 'keychain' %}">Keychain</a></li>
+		              {% endif %}
+		            </ul>
+		            {% endif %}
+		            <ul class="nav nav-sidebar">
+		              {% if safari_data %}
+		              <li><a href="{% url 'safaridata' %}">Safari Searches</a></li>
+		              {% endif %}
+		              {% if snap_friends or snap_data %}
+		              <li><a href="{% url 'snapdata' %}">Snapchat</a></li>
+		              {% endif %}
+		              {% if hopstop_data or hopstop_rec %}
+		              <li><a href="{% url 'hopstopdata' %}">HopStop</a></li>
+		              {% endif %}
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'images' %}">Images</a></li>
+		            </ul>
+		          
+		        </div><!--/span-->
+		        
+		        <div class="col-sm-9 col-md-10 main">
+		          
+				  <h1 class="page-header">
+						All Calendar Data
+		          </h1>
+
+		          <div class="row placeholders">
+					<div class="placeholder text-center">
+
+						<ul class="nav nav-tabs" data-tabs="tabs">
+							<li class="active"><a href="#monthlyCalendar" data-toggle="tab">Monthly Calendar</a></li>
+							<li><a href="#Table" data-toggle="tab">Table</a></li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane" id="Table">
+								<br/>
+								{% include "CalendardataTable.html" %}
+							</div>
+							<div class="tab-pane active" id="monthlyCalendar">
+								<br/>
+								<div id="calendar"></div>
+								<div id="fullCalModal" class="modal fade">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+												<h4 id="modalTitle" class="modal-title"></h4>
+											</div>
+										<div id="modalBody" class="modal-body"></div>
+											<div class="modal-footer">
+								            	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+		            </div>
+		            
+		          </div>
+		          
+		      </div><!--/row-->
+			</div>
+		</div><!--/.container-->
+ 	</body>
+</html>

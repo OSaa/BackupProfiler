@@ -1,0 +1,343 @@
+<!DOCTYPE HTML>
+<html>
+	
+	{% include "dependencies.html" %}
+	
+    <body>
+    	{% include "nav.html" %}
+
+		<div class="container-fluid">
+		      
+		      <div class="row row-offcanvas row-offcanvas-left">
+		        
+		         <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+		           
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'overview' %}">Overview</a></li>
+		              <li><a href="{% url 'top10' %}">Top 10</a></li>
+		              <li><a href="{% url 'smsdata' %}">SMS Data</a></li>
+		              <li><a href="{% url 'calldata' %}">Call Data</a></li>
+		              <li><a href="{% url 'calendardata' %}">Calendar Data</a></li>
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'appdata' %}">App Data</a></li>
+		              <li class="active"><a href="{% url 'appspecific' %}">App Specifics</a></li>
+		              <li><a href="{% url 'accounts' %}">Accounts</a></li>
+		              <li><a href="{% url 'appplists' %}">App Plists</a></li>
+		            </ul>
+		            {% if wifiData or keychainData %}
+		            <ul class="nav nav-sidebar">
+		              {% if wifiData %}
+		              <li><a href="{% url 'wifi' %}">WiFi</a></li>
+			          {% endif %}
+			          {% if keychainData %}
+		              <li><a href="{% url 'keychain' %}">Keychain</a></li>
+		              {% endif %}
+		            </ul>
+		            {% endif %}
+		            <ul class="nav nav-sidebar">
+		              {% if safari_data %}
+		              <li><a href="{% url 'safaridata' %}">Safari Searches</a></li>
+		              {% endif %}
+		              {% if snap_friends or snap_data %}
+		              <li><a href="{% url 'snapdata' %}">Snapchat</a></li>
+		              {% endif %}
+		              {% if hopstop_data or hopstop_rec %}
+		              <li><a href="{% url 'hopstopdata' %}">HopStop</a></li>
+		              {% endif %}
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'images' %}">Images</a></li>
+		            </ul>
+		          
+		        </div><!--/span-->
+		        
+		        <div class="col-sm-9 col-md-10 main">
+				  <h1 class="page-header">
+						App Specific Data
+		          </h1>
+		          <div class="row placeholders">
+		          	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+		          								<!-- 		LinkedIn 		-->
+					  {% if linkedin_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingOne">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+					          LinkedIn
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+					      <div class="panel-body" style="height:225px; overflow:scroll;">
+					      	<div>
+						      	{% for key,val in linkedin_data.items %}
+							      	<p><b>{{ key }}:</b> {{ val }}</p>
+						      	{% endfor %}
+						     </div>
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  							<!-- 		FACEBOOK 		-->
+					  {% if fb_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingTwo">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+					          Facebook
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+					      <div class="panel-body" style="height:225px; overflow:scroll;">
+					      	{% for key, val in fb_data.items %}
+					      	<b>{{ key }}</b>
+					      	<p>{{ val }}</p>
+					      	{% endfor %}
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  							<!-- 		SUNRISE CALENDAR 		-->
+					  {% if sunrise_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingThree">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+					          Sunrise Calendar
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+					      <div class="panel-body" style="height:225px; overflow:scroll;">
+					      	{% for key, val in sunrise_data.items %}
+					      	<p><b>{{ key }}:</b> {{ val }}</p>
+					      	{% endfor %}
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  							<!-- 		GOOGLE MAP 		-->
+					  {% if googleMap_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingFour">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+					          Google Maps
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+					      <div class="panel-body" style="height:225px; overflow:scroll;">
+					      	{% for key, val in googleMap_data.items %}
+					      	<p><b>{{ key }}:</b> {{ val }}</p>
+					      	{% endfor %}
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  							<!-- 		APPLE MAIL 		-->
+					  {% if appleMail_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingFive">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+					          Apple Mail
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+					      <div class="panel-body" style="height:225px; overflow:scroll;">
+					      	<b>Mailboxes</b> 
+					      	{% for key,val in appleMail_data.items %}
+					      	<p>Name: {{ key }} Unique ID: {{ val }}</p>
+					      	{% endfor %}
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  							<!-- 		WhatsApp 		-->
+					  {% if whatsapp_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingSix">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+					          WhatsApp
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+					      <div class="panel-body" style="height:230px; overflow:scroll;">
+					      	{% for key, val in whatsapp_data.items %}
+					      	<p><b>{{ key }}:</b> {{ val }}</p>
+					      	{% endfor %}
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  							<!-- 		Instagram 		-->
+					  {% if insta_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingSeven">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+					          Instagram
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+					      <div class="panel-body" style="height:225px; overflow:scroll;">
+					      	<div>
+						      	{% for key,val in insta_data.items %}
+						      	<b>{{ key }}</b>
+							      	{% for item in val %}
+								      	<p style="margin-left:10px;">{{ item }}</p>
+							      	{% endfor %}
+						      	{% endfor %}
+						     </div>
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  							<!-- 		Apple Maps 		-->
+					  {% if applemap_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingEight">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+					          Apple Maps
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
+					      <div class="panel-body" style="height:225px; overflow:scroll;">
+					      	<div>
+						      	{% for key,val in applemap_data.items %}
+						      	<p><b>{{ key }}:</b> {{ val }}</p>
+						      	{% endfor %}
+						     </div>
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  							<!-- 		OpenTable 		-->
+					  {% if applemap_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingNine">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+					          OpenTable
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
+					      <div class="panel-body" style="height:225px; overflow:scroll;">
+						      	<div class="pull-right">
+						      	{% for key,val in opentable_data.items %}
+							      	<p><b>{{ key }}:</b> {{ val }}</p>
+						      	{% endfor %}
+						    </div>
+						    <div class="pull-left">
+						     	<b>Recent History</b>
+						     	{%for item in opentable_rec %}
+							     	<p>{{ item }}</p>
+						     	{% endfor %}
+						    </div>
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  							<!-- 		Uber 		-->
+					  {% if uber_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingTen">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+					          Uber
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
+					      <div class="panel-body" style="height:225px; overflow:scroll;">
+						      	<div class="pull-left">
+						      	{% for key,val in uber_data.items %}
+							      	<p><b>{{ key }}:</b> {{ val }}</p>
+						      	{% endfor %}
+						    </div>
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  							<!-- 		Dunkin Donuts 		-->
+					  {% if dunkin_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingEleven">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
+					          Dunkin Donuts
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseEleven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEleven">
+					      <div class="panel-body" style="height:225px; overflow:scroll;">
+						      	<div class="pull-left">
+						      	{% for key,val in dunkin_data.items %}
+							      	<p><b>{{ key }}:</b> {{ val }}</p>
+						      	{% endfor %}
+						    </div>
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  							<!-- 		GroupMe 		-->
+					  {% if groupMe_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingTwelve">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
+					          GroupMe
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseTwelve" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwelve">
+					      <div class="panel-body" style="height:225px; overflow:scroll;">
+						      	<div class="pull-left">
+						      	{% for key,val in groupMe_data.items %}
+							      	<p><b>{{ key }}:</b> {{ val }}</p>
+						      	{% endfor %}
+						    </div>
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  							<!-- 		GasBuddy 		-->
+					  {% if gasBud_data %}
+					  <div class="panel panel-primary">
+					    <div class="panel-heading" role="tab" id="headingTwelve">
+					      <h4 class="panel-title">
+					        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
+					          GasBuddy
+					        </a>
+					      </h4>
+					    </div>
+					    <div id="collapseTwelve" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwelve">
+					      <div class="panel-body" style="height:225px; overflow:scroll;">
+				      		<b>Zipcode Searches</b>
+
+					      	{% for item in gasBud_data %}
+						      	<p style="margin-left:10px;">{{item}}</p>
+					      	{% endfor %}
+					      </div>
+					    </div>
+					  </div>
+					  {% endif %}
+					  
+					</div>
+		          </div>
+		      </div><!--/row-->
+
+			</div>
+		</div><!--/.container-->
+ 	</body>
+</html>

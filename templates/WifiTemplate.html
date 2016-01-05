@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+
+	{% include "dependencies.html" %}
+
+	<script type="text/javascript">
+		$( document ).ready(function() {
+
+			  var jsonData
+			
+		      array2 = new Array( {{ wifiData|safe }} )
+
+		      for (var i = 0; i < array2.length; i++) {
+		          jsonData = array2[i];
+		      }
+
+		      if (jsonData.length != 0){
+		        for (var i = 0; i < jsonData.length; i++){
+		              newitem = "<li><a id=" + jsonData[i][0] + " href=''>" + jsonData[i][0] + "</a></li>" 
+		              $("#wifiList").append(newitem);
+		        }
+		      }else{
+		        newitem = "<li><a>None</a></li>"
+		        $("#wifiList").append(newitem);
+		      }
+
+		      var tableData
+
+		      $("#wifiList").click(function(event) {
+		          wifiSelected = $(event.target).text()
+		          event.preventDefault();
+
+		          for (var i=0; i< jsonData.length; i++){
+		          	if (jsonData[i][0] === wifiSelected){
+		          		tableData = jsonData[i][1]
+
+
+				      $("#WiFiName").text(wifiSelected)
+
+		          		$('#wifiTable').remove()
+		          		$("#wifiTable_wrapper").remove()
+		          		newTable = "<table cellpadding='0' cellspacing='0' border='0' class='display' id='wifiTable'></table>"
+
+		          		$('#table').append(newTable)
+		          		
+		          		$('#wifiTable').dataTable( {
+					        "data": tableData,
+					        "columns": [
+					            { "title": "Key" },
+					            { "title": "Value" }
+					        ],
+					        "scrollX": true
+					   } );
+		          		
+		          	}
+		          }
+		      });
+
+		      var wirelessJSON
+
+		      wirelessData = new Array( {{ wirelessSSID|safe }} )
+
+
+		      for (var i = 0; i < wirelessData.length; i++) {
+		          wirelessJSON = wirelessData[i];
+		      }
+
+		      if (wirelessJSON.length != undefined){
+		        for (var key in wirelessJSON){
+		              newitem = "<li><a id=" + key + " href=''>" + key + "</a></li>" 
+		              $("#wirelessList").append(newitem);
+		        }
+		      }else{
+		        newitem = "<li><a>None</a></li>"
+		        $("#wirelessList").append(newitem);
+		      }
+
+
+		      $("#wirelessList").click(function(event) {
+		          wirelessSelected = $(event.target).text()
+		          event.preventDefault();
+
+		          for (var key in wirelessJSON){
+		          	if (key === wirelessSelected){
+		          		tableData = wirelessJSON[key]
+
+
+				      $("#WiFiName").text(wirelessSelected)
+
+		          		$('#wifiTable').remove()
+		          		$("#wifiTable_wrapper").remove()
+		          		newTable = "<table cellpadding='0' cellspacing='0' border='0' class='display' id='wifiTable'></table>"
+
+		          		$('#table').append(newTable)
+		          		
+		          		$('#wifiTable').dataTable( {
+					        "data": tableData,
+					        "columns": [
+					            { "title": "Key" },
+					            { "title": "Value" }
+					        ],
+					   } );
+		          		
+		          	}
+		          }
+		      });
+
+		      
+		      $('#wifiTable').dataTable( {
+			        "data": tableData,
+			        "columns": [
+			            { "title": "Key" },
+			            { "title": "Value" }
+			        ]
+			   } );
+
+	    });
+	</script>
+	<style>
+	.scrollable-menu {
+	    height: auto;
+	    max-height: 200px;
+	    overflow-x: hidden;
+	}
+	</style>
+    <body>
+    	{% include "nav.html" %}
+
+		<div class="container-fluid">
+		      
+		      <div class="row row-offcanvas row-offcanvas-left" style="">
+		        
+		         <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+		           
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'overview' %}">Overview</a></li>
+		              <li><a href="{% url 'top10' %}">Top 10</a></li>
+		              <li><a href="{% url 'smsdata' %}">SMS Data</a></li>
+		              <li><a href="{% url 'calldata' %}">Call Data</a></li>
+		              <li><a href="{% url 'calendardata' %}">Calendar Data</a></li>
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'appdata' %}">App Data</a></li>
+		              <li><a href="{% url 'appspecific' %}">App Specifics</a></li>
+		              <li><a href="{% url 'accounts' %}">Accounts</a></li>
+		              <li><a href="{% url 'appplists' %}">App Plists</a></li>
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li class="active"><a href="{% url 'wifi' %}">WiFi</a></li>
+		              {% if keychainData %}
+		              <li><a href="{% url 'keychain' %}">Keychain</a></li>
+		              {% endif %}
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              {% if safari_data %}
+		              <li><a href="{% url 'safaridata' %}">Safari Searches</a></li>
+		              {% endif %}
+		              {% if snap_friends or snap_data %}
+		              <li><a href="{% url 'snapdata' %}">Snapchat</a></li>
+		              {% endif %}
+		              {% if hopstop_data or hopstop_rec %}
+		              <li><a href="{% url 'hopstopdata' %}">HopStop</a></li>
+		              {% endif %}
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'images' %}">Images</a></li>
+		            </ul>
+		          
+		        </div><!--/span-->
+		        
+		        <div class="col-sm-9 col-md-10 main">
+				  <h1 class="page-header">
+						WiFi Data
+		          </h1>
+		          <div class="row placeholders">
+		          	<div class="dropdown" style="display:inline;">
+		          	 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    WiFi List
+					    <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu scrollable-menu" id="wifiList" aria-labelledby="dropdownMenu1">
+					  </ul>
+					</div>
+
+					<div class="dropdown" style="display:inline;">
+		          	 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    Wireless List
+					    <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu scrollable-menu" id="wirelessList" aria-labelledby="dropdownMenu1">
+					  </ul>
+					</div>
+					
+					<h3 id="WiFiName"></h3>
+
+					<div id="table">
+						<table cellpadding="0" cellspacing="0" border="0" class="display" id="wifiTable"></table>
+					</div>
+					  
+					</div>
+
+		          </div>
+		      </div><!--/row-->
+
+			</div>
+		</div><!--/.container-->
+ 	</body>
+</html>

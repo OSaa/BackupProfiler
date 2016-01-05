@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<html>
+	
+	{% include "dependencies.html" %}
+	
+	<script type="text/javascript">
+		$( document ).ready(function() {
+
+			  var jsonData
+			
+		      array2 = new Array( {{ plistData|safe }} )
+
+		      for (var i = 0; i < array2.length; i++) {
+		          jsonData = array2[i];
+		      }
+
+		      if (jsonData.length != undefined){
+		        for (var i = 0; i < jsonData.length; i++){
+		              newitem = "<li><a id=" + jsonData[i][0] + " href=''>" + jsonData[i][0] + "</a></li>" 
+		              $("#AppList").append(newitem);
+		        }
+		      }else{
+		        newitem = "<li><a>None</a></li>"
+		        $("#AppList").append(newitem);
+		      }
+
+		      var tableData
+
+		      $("#AppList").click(function(event) {
+		          plistSelected = $(event.target).text()
+		          event.preventDefault();
+
+		          for (var i=0; i< jsonData.length; i++){
+		          	if (jsonData[i][0] === plistSelected){
+		          		tableData = jsonData[i][1]
+
+				      $("#plistName").text(plistSelected)
+
+		          		$('#plistTable').remove()
+		          		$("#plistTable_wrapper").remove()
+		          		newTable = "<table cellpadding='0' cellspacing='0' border='0' class='display' id='plistTable'></table>"
+
+		          		$('#table').append(newTable)
+		          		
+		          		$('#plistTable').dataTable( {
+					        "data": tableData,
+					        "columns": [
+					            { "title": "Key" },
+					            { "title": "Value" }
+					        ],
+					        "scrollX": true
+					   } );
+		          		
+		          	}
+		          }
+		      });
+		      $('#plistTable').dataTable( {
+			        "data": tableData,
+			        "columns": [
+			            { "title": "Key" },
+			            { "title": "Value" }
+			        ]
+			   } );
+
+	    });
+	</script>
+	<style>
+	.scrollable-menu {
+	    height: auto;
+	    max-height: 200px;
+	    overflow-x: hidden;
+	}
+	</style>
+    <body>
+    	{% include "nav.html" %}
+
+		<div class="container-fluid">
+		      
+		      <div class="row row-offcanvas row-offcanvas-left">
+		        
+		         <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+		           
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'overview' %}">Overview</a></li>
+		              <li><a href="{% url 'top10' %}">Top 10</a></li>
+		              <li><a href="{% url 'smsdata' %}">SMS Data</a></li>
+		              <li><a href="{% url 'calldata' %}">Call Data</a></li>
+		              <li><a href="{% url 'calendardata' %}">Calendar Data</a></li>
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'appdata' %}">App Data</a></li>
+		              <li><a href="{% url 'appspecific' %}">App Specifics</a></li>
+		              <li><a href="{% url 'accounts' %}">Accounts</a></li>
+		              <li class="active"><a href="{% url 'appplists' %}">App Plists</a></li>
+		            </ul>
+		            {% if wifiData or keychainData %}
+		            <ul class="nav nav-sidebar">
+		              {% if wifiData %}
+		              <li><a href="{% url 'wifi' %}">WiFi</a></li>
+			          {% endif %}
+			          {% if keychainData %}
+		              <li><a href="{% url 'keychain' %}">Keychain</a></li>
+		              {% endif %}
+		            </ul>
+		            {% endif %}
+		            <ul class="nav nav-sidebar">
+		              {% if safari_data %}
+		              <li><a href="{% url 'safaridata' %}">Safari Searches</a></li>
+		              {% endif %}
+		              {% if snap_friends or snap_data %}
+		              <li><a href="{% url 'snapdata' %}">Snapchat</a></li>
+		              {% endif %}
+		              {% if hopstop_data or hopstop_rec %}
+		              <li><a href="{% url 'hopstopdata' %}">HopStop</a></li>
+		              {% endif %}
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'images' %}">Images</a></li>
+		            </ul>
+		          
+		        </div><!--/span-->
+		        
+		        <div class="col-sm-9 col-md-10 main">
+				  <h1 class="page-header">
+						App Plist Data
+		          </h1>
+		          <div class="row placeholders">
+		          	
+					<div class="dropdown">
+					  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    App List
+					    <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu scrollable-menu" id="AppList" aria-labelledby="dropdownMenu1">
+					  </ul>
+					</div>
+					
+					<h3 id="plistName"></h3>
+
+					<div id="table">
+						<table cellpadding="0" cellspacing="0" border="0" class="display" id="plistTable"></table>
+					</div>
+
+		          </div>
+		      </div><!--/row-->
+
+			</div>
+		</div><!--/.container-->
+ 	</body>
+</html>

@@ -1,0 +1,23 @@
+<script>
+	$(document).ready(function() {
+		var jsonTableData
+	  	array2 = new Array( {{ json_Calls_Table_Data|safe }} )
+	  	for (var i = 0; i < array2.length; i++) {
+			jsonTableData = array2[i];
+		}
+
+	    
+	    $('#Callstable').dataTable( {
+	        "data": jsonTableData,
+	        "columns": [
+	            { "title": "Name" },
+	            { "title": "Phone Number" },
+	            { "title": "Date/Time" },
+	            { "title": "Call Type" },
+	            { "title": "Duration (Minutes)"}
+	        ]
+	    } );   
+	} );
+</script>
+
+<table cellpadding="0" cellspacing="0" border="0" class="stripe hover" id="Callstable"></table>

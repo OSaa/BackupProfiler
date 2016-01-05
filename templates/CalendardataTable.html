@@ -1,0 +1,27 @@
+<script>
+	$(document).ready(function() {
+		var jsonTableData
+	  	array2 = new Array( {{ json_Calendar_Table_Data|safe }} )
+	  	for (var i = 0; i < array2.length; i++) {
+			jsonTableData = array2[i];
+		}
+
+	    
+	    $('#Calendartable').dataTable( {
+	        "data": jsonTableData,
+	        "columns": [
+	            { "title": "Event" },
+	            { "title": "Start Date" },
+	            { "title": "End Date" },
+	            { "title": "Location" },
+	            { "title": "Description" },
+	            { "title": "Start Timezone" },
+	            { "title": "End Timezone" },
+	            { "title": "Calendar Type" },
+	            { "title": "Owner Email" }
+	        ]
+	    } );   
+	} );
+</script>
+
+<table cellpadding="0" cellspacing="0" border="0" class="stripe" id="Calendartable"></table>

@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+
+	{% include "dependencies.html" %}
+
+	<script type="text/javascript">
+		$( document ).ready(function() {
+
+		      var jsonData
+
+		      array2 = new Array( {{ keychainData|safe }} )
+
+		      for (var i = 0; i < array2.length; i++) {
+		          jsonData = array2[i];
+		      }
+
+		      if (jsonData.length != 0){
+		        for (var key in jsonData){
+		              newitem = "<li><a id=" + key + " href=''>" + key + "</a></li>" 
+		              $("#KeychainList").append(newitem);
+		        }
+		      }else{
+		        newitem = "<li><a>None</a></li>"
+		        $("#KeychainList").append(newitem);
+		      }
+
+		      $('#KeychainTable').dataTable( {
+			        "data": jsonData,
+			        "columns": [
+			            { "title": "Key" },
+			            { "title": "Value" }
+			        ]
+			   } );
+
+		    //   var tableData
+
+		      $("#KeychainList").click(function(event) {
+		          plistSelected = $(event.target).text()
+		          event.preventDefault();
+
+		          for (var key in jsonData){
+		          	if (key === plistSelected){
+		          		tableData = jsonData[key]
+
+				      $("#KeyItemName").text(plistSelected)
+
+		          		$('#KeychainTable').remove()
+		          		$("#KeychainTable_wrapper").remove()
+		          		newTable = "<table cellpadding='0' cellspacing='0' border='0' class='display' id='KeychainTable'></table>"
+
+		          		$('#table').append(newTable)
+		          		
+		          		$('#KeychainTable').dataTable( {
+					        "data": tableData,
+					        "columns": [
+					            { "title": "Key" },
+					            { "title": "Value" }
+					        ],
+					        "scrollY": "500px",
+					        "scrollCollapse": true
+					   } );
+		          		
+		          	}
+		          }
+		      });
+
+	    });
+	</script>
+	<style>
+	.scrollable-menu {
+	    height: auto;
+	    max-height: 200px;
+	    overflow-x: hidden;
+	}
+	</style>
+    <body>
+    	{% include "nav.html" %}
+
+		<div class="container-fluid">
+		      
+		      <div class="row row-offcanvas row-offcanvas-left">
+		        
+		         <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+		           
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'overview' %}">Overview</a></li>
+		              <li><a href="{% url 'top10' %}">Top 10</a></li>
+		              <li><a href="{% url 'smsdata' %}">SMS Data</a></li>
+		              <li><a href="{% url 'calldata' %}">Call Data</a></li>
+		              <li><a href="{% url 'calendardata' %}">Calendar Data</a></li>
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'appdata' %}">App Data</a></li>
+		              <li><a href="{% url 'appspecific' %}">App Specifics</a></li>
+		              <li><a href="{% url 'accounts' %}">Accounts</a></li>
+		              <li><a href="{% url 'appplists' %}">App Plists</a></li>
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              {% if wifiData %}
+		              <li><a href="{% url 'wifi' %}">WiFi</a></li>
+		              {% endif %}
+		              <li class="active"><a href="{% url 'keychain' %}">Keychain</a></li>
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              {% if safari_data %}
+		              <li><a href="{% url 'safaridata' %}">Safari Searches</a></li>
+		              {% endif %}
+		              {% if snap_friends or snap_data %}
+		              <li><a href="{% url 'snapdata' %}">Snapchat</a></li>
+		              {% endif %}
+		              {% if hopstop_data or hopstop_rec %}
+		              <li><a href="{% url 'hopstopdata' %}">HopStop</a></li>
+		              {% endif %}
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'images' %}">Images</a></li>
+		            </ul>
+		          
+		        </div><!--/span-->
+		        
+		        <div class="col-sm-9 col-md-10 main">
+				  <h1 class="page-header">
+						Keychain Data
+		          </h1>
+		          <div class="row placeholders">
+		          	
+					<div class="dropdown">
+					  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    Keychain List
+					    <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu scrollable-menu" id="KeychainList" aria-labelledby="dropdownMenu1">
+					  </ul>
+					</div>
+					
+					<h3 id="KeyItemName"></h3>
+
+					<div id="table">
+						<table cellpadding="0" cellspacing="0" border="0" class="display" id="KeychainTable"></table>
+					</div>
+
+		          </div>
+		      </div><!--/row-->
+
+			</div>
+		</div><!--/.container-->
+ 	</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+	
+	{% include "dependencies.html" %}
+
+    <body>
+    	{% include "nav.html" %}
+
+		<div class="container-fluid">
+		      
+		      <div class="row row-offcanvas row-offcanvas-left">
+		        
+		         <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+		           
+		            <ul class="nav nav-sidebar">
+		              <li class="active"><a href="{% url 'overview' %}">Overview</a></li>
+		              <li><a href="{% url 'top10' %}">Top 10</a></li>
+		              <li><a href="{% url 'smsdata' %}">SMS Data</a></li>
+		              <li><a href="{% url 'calldata' %}">Call Data</a></li>
+		              <li><a href="{% url 'calendardata' %}">Calendar Data</a></li>
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'appdata' %}">App Data</a></li>
+		              <li><a href="{% url 'appspecific' %}">App Specifics</a></li>
+		              <li><a href="{% url 'accounts' %}">Accounts</a></li>
+		              <li><a href="{% url 'appplists' %}">App Plists</a></li>
+		            </ul>
+		            {% if wifiData or keychainData %}
+		            <ul class="nav nav-sidebar">
+		              {% if wifiData %}
+		              <li><a href="{% url 'wifi' %}">WiFi</a></li>
+			          {% endif %}
+			          {% if keychainData %}
+		              <li><a href="{% url 'keychain' %}">Keychain</a></li>
+		              {% endif %}
+		            </ul>
+		            {% endif %}
+		            <ul class="nav nav-sidebar">
+		              {% if safari_data %}
+		              <li><a href="{% url 'safaridata' %}">Safari Searches</a></li>
+		              {% endif %}
+		              {% if snap_friends or snap_data %}
+		              <li><a href="{% url 'snapdata' %}">Snapchat</a></li>
+		              {% endif %}
+		              {% if hopstop_data or hopstop_rec %}
+		              <li><a href="{% url 'hopstopdata' %}">HopStop</a></li>
+		              {% endif %}
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'images' %}">Images</a></li>
+		            </ul>
+		          
+		        </div><!--/span-->
+		        
+		        <div class="col-sm-9 col-md-10 main">
+		          
+				  <h1 class="page-header">
+						iPhone Information
+		          </h1>
+
+		          <div class="row placeholders">
+					<div class=""> <!-- col-xs-8 col-sm-3 placeholder text-center -->
+
+						<h4 style="display:inline-block;font-size:22px;">Device Name: </h4> <p style="display:inline-block;font-size:18px;">{{ device_name }}</p>
+						</br>
+						<h4 style="display:inline-block;font-size:22px;">Backup Date: </h4> <p style="display:inline-block;font-size:18px;">{{ backup_date }}</p>
+						</br>
+						<h4 style="display:inline-block;font-size:22px;">Phone Number: </h4> <p style="display:inline-block;font-size:18px;">{{ phone_number }}</p>
+						</br>
+						<h4 style="display:inline-block;font-size:22px;">Product Type:</h4> <p style="display:inline-block;font-size:18px;">{{ producttype }}</p>
+						</br>
+						<h4 style="display:inline-block;font-size:22px;">iOS Version:</h4> <p style="display:inline-block;font-size:18px;">{{prod_version}}</p>
+						</br>
+						<h4 style="display:inline-block;font-size:22px;">Serial Number:</h4> <p style="display:inline-block;font-size:18px;">{{ serial_num }}</p>
+						</br>
+						<h4 style="display:inline-block;font-size:22px;">Unique Identifier:</h4> <p style="display:inline-block;font-size:18px;">{{ uid }}</p>
+						</br>
+						<h4 style="display:inline-block;font-size:22px;">GUID:</h4> <p style="display:inline-block;font-size:18px;">{{guid}}</p>
+		            </div>
+		          </div>
+		          
+		      </div><!--/row-->
+			</div>
+		</div><!--/.container-->
+ 	</body>
+</html>

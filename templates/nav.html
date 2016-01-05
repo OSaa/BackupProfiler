@@ -1,0 +1,95 @@
+ <script>
+  function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  $( document ).ready(function() {
+
+      $("#backupList").click(function(event) {
+          // $.post( "{% url 'update' %}", { backupSelected: event.target.id }, function(data){
+          //   alert(data)
+          // } )
+          $.ajaxSetup({
+              beforeSend: function(xhr, settings) {
+                  if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                      // Only send the token to relative URLs i.e. locally.
+                      xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                  }
+              }
+          });
+
+          $.ajax({
+               type:"POST",
+               url: "{% url 'update' %}",
+               data: { 
+                 backupSelected: event.target.id
+               },
+               dataType: "json",
+               "beforeSend": function(xhr, settings) {
+                  console.log("Before Send");
+                  $.ajaxSettings.beforeSend(xhr, settings);
+               },
+               "success": function(data){
+                  alert(data)
+                  // console.log()
+                  // console.log("hit")
+                  // setTimeout(location.reload(), 1000)
+                  // console.log("hit2")
+               }
+            });
+      });
+
+      array2 = new Array( {{ all_backups|safe }} )
+
+      for (var i = 0; i < array2.length; i++) {
+          jsonData = array2[i];
+      }
+
+      if (jsonData.length != undefined){
+        for (var i = 0; i < jsonData.length; i++){
+              newitem = "<li><a id=" + jsonData[i][1] + " href=''>" + jsonData[i][0] + "</a></li>" 
+              $("#backupList").append(newitem);
+        }
+      }else{
+        newitem = "<li><a>None</a></li>"
+        $("#backupList").append(newitem);
+      }
+    });
+
+</script>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" style="color:white;" href="{% url 'overview' %}">BackupProfiler</a>
+    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{% url 'home' %}">Extract Backup Data</a></li>
+        <li class="Dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Backups <span class="caret"></span></a>
+            <ul class="dropdown-menu" id="backupList" role="menu"></ul>
+          </li>
+      </ul>
+      <form id='tempform' action="{% url 'overview' %}" method="post">
+      </form>
+    </div>
+  </div>
+</nav>

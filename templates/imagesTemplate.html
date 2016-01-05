@@ -1,0 +1,191 @@
+<!DOCTYPE HTML>
+<html>
+
+	{% include "dependencies.html" %}
+
+	<script>
+		$(document).ready(function() {
+			$('ul.nav-tabs li a').click(function (e) {
+				$('ul.nav-tabs li.active').removeClass('active')
+				$(this).parent('li').addClass('active')
+			})
+			var jsonImages = new Array()
+		  	array2 = new Array( {{ image_paths|safe }} )
+
+		  	for (var i = 0; i < array2.length; i++) {
+		  		for( var j=0; j<array2[i].length; j++){
+					jsonImages.push(array2[i][j]);
+				}
+			}
+
+			for (var i = 0; i < jsonImages.length; i++) {
+				var pic = jsonImages[i] 
+
+				$( "#links" ).append( "<a href='/" + pic + "' data-gallery><img height='40' width='40' src='/" + pic + "' /></a>");
+			}
+		});
+		google.load('visualization', '1.1', {packages: ['map']});
+	    google.setOnLoadCallback(drawMap);
+
+	    function drawMap () {
+		       var jsonTableData
+			   array2 = new Array( {{ map_Data|safe }} )
+
+			   for (var i = 0; i < array2.length; i++) {
+					jsonTableData = array2[i];
+			   }
+
+			  var numRows = jsonTableData.length;
+
+		      var data = new google.visualization.DataTable();
+		      data.addColumn('number', 'Latitude');
+		      data.addColumn('number', 'Longitude');
+		      data.addColumn('string', 'Marker');
+
+		      // Add Rows
+		      for (var i = 1; i < numRows; i++){
+	             data.addRow( jsonTableData[i] );
+	          }
+
+
+		      var url = 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/';
+
+		      var options = {
+		      	  enableScrollWheel: true,
+		      	  showTip: true,
+			      useMapTypeControl: true,
+		          icons: {
+		            default: {
+		              normal: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/Map-Marker-Ball-Pink-icon.png',
+		              selected: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/Map-Marker-Ball-Pink-icon.png'
+		            }
+		          }
+		        };
+
+		      var map = new google.visualization.Map(document.getElementById('map_div'));
+
+		      map.draw(data, options);
+	    }
+	</script>
+    <body>
+    	{% include "nav.html" %}
+
+		<div class="container-fluid">
+		      
+		      <div class="row row-offcanvas row-offcanvas-left">
+		        
+		         <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+		           
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'overview' %}">Overview</a></li>
+		              <li><a href="{% url 'top10' %}">Top 10</a></li>
+		              <li><a href="{% url 'smsdata' %}">SMS Data</a></li>
+		              <li><a href="{% url 'calldata' %}">Call Data</a></li>
+		              <li><a href="{% url 'calendardata' %}">Calendar Data</a></li>
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'appdata' %}">App Data</a></li>
+		              <li><a href="{% url 'appspecific' %}">App Specifics</a></li>
+		              <li><a href="{% url 'accounts' %}">Accounts</a></li>
+		              <li><a href="{% url 'appplists' %}">App Plists</a></li>
+		            </ul>
+		            {% if wifiData or keychainData %}
+		            <ul class="nav nav-sidebar">
+		              {% if wifiData %}
+		              <li><a href="{% url 'wifi' %}">WiFi</a></li>
+			          {% endif %}
+			          {% if keychainData %}
+		              <li><a href="{% url 'keychain' %}">Keychain</a></li>
+		              {% endif %}
+		            </ul>
+		            {% endif %}
+		            <ul class="nav nav-sidebar">
+		              {% if safari_data %}
+		              <li><a href="{% url 'safaridata' %}">Safari Searches</a></li>
+		              {% endif %}
+		              {% if snap_friends or snap_data %}
+		              <li><a href="{% url 'snapdata' %}">Snapchat</a></li>
+		              {% endif %}
+		              {% if hopstop_data or hopstop_rec %}
+		              <li><a href="{% url 'hopstopdata' %}">HopStop</a></li>
+		              {% endif %}
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li class="active"><a href="{% url 'images' %}">Images</a></li>
+		            </ul>
+		          
+		        </div><!--/span-->
+		        
+		        <div class="col-sm-9 col-md-10 main">
+		          
+				  <h1 class="page-header">
+						Images Data
+		          </h1>
+
+		          <div class="row placeholders">
+					<div class="placeholder text-center">
+						<ul class="nav nav-tabs" data-tabs="tabs">
+					       <li class="active"><a href="#Map" data-toggle="tab">Map</a></li>
+					       <li><a href="#Table" data-toggle="tab">Table</a></li>
+					       <li><a href="#images" data-toggle="tab">Images</a></li>
+					    </ul>
+					    <div class="tab-content">
+						   	  <div class="tab-pane active" id="Map">
+						   	  	<br/>
+						   	  	<div id="map_div" style="height: 500px; width: 900px"></div>
+						   	  	<h4>*Displays locations where pictures were taken.</h4>
+						   	  </div>
+						   	  <div class="tab-pane" id="Table">
+						   	  	<br/>
+						   	  		{% include "imageTable.html" %}
+						   	  </div>
+						   	  <div class="tab-pane" id="images">
+						   	  	<br/>
+						   	  	<div id="links">
+						   	  		<!-- Where Images Go -->
+						   	  	</div>
+						   	  	<!-- The Bootstrap Image Gallery lightbox, should be a child element of the document body -->
+								<div id="blueimp-gallery" class="blueimp-gallery">
+								    <!-- The container for the modal slides -->
+								    <div class="slides"></div>
+								    <!-- Controls for the borderless lightbox -->
+								    <h3 class="title"></h3>
+								    <a class="prev">‹</a>
+								    <a class="next">›</a>
+								    <a class="close">×</a>
+								    <a class="play-pause"></a>
+								    <ol class="indicator"></ol>
+								    <!-- The modal dialog, which will be used to wrap the lightbox content -->
+								    <div class="modal fade">
+								        <div class="modal-dialog">
+								            <div class="modal-content">
+								                <div class="modal-header">
+								                    <button type="button" class="close" aria-hidden="true">&times;</button>
+								                    <h4 class="modal-title"></h4>
+								                </div>
+								                <div class="modal-body next"></div>
+								                <div class="modal-footer">
+								                    <button type="button" class="btn btn-default pull-left prev">
+								                        <i class="glyphicon glyphicon-chevron-left"></i>
+								                        Previous
+								                    </button>
+								                    <button type="button" class="btn btn-primary next">
+								                        Next
+								                        <i class="glyphicon glyphicon-chevron-right"></i>
+								                    </button>
+								                </div>
+								            </div>
+								        </div>
+								    </div>
+								</div>
+						   	  </div>
+					    </div>
+		            </div>
+		            
+		          </div>
+		          
+		      </div><!--/row-->
+			</div>
+		</div><!--/.container-->
+ 	</body>
+</html>

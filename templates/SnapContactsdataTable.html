@@ -1,0 +1,20 @@
+<script>
+	$(document).ready(function() {
+		var jsonTableData
+	  	array2 = new Array( {{ snap_friends|safe }} )
+	  	for (var i = 0; i < array2.length; i++) {
+			jsonTableData = array2[i];
+		}
+
+	    
+	    $('#SnapContactsTable').dataTable( {
+	        "data": jsonTableData,
+	        "columns": [
+	            { "title": "Contact" },
+	            { "title": "Snapchat Username" }
+	        ]
+	    } );   
+	} );
+</script>
+
+<table cellpadding="0" cellspacing="0" border="0" class="stripe hover table-condensed " id="SnapContactsTable"></table>
