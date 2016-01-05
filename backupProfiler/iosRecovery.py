@@ -485,7 +485,7 @@ def main(newBackup):
         if not os.path.isdir(dest):
         	if dest != "None":
 		        print "directory: " + dest + " Created"
-		        os.mkdir(dest)
+		        os.makedirs(dest)
 		        
 		        # Process SMS text 
 		        SMSoutputdir = dest + '/SMS/'
