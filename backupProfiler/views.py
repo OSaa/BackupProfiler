@@ -173,7 +173,7 @@ class ViewsHandler():
 			for d in dirs:
 				backup = os.path.join(backupLocation, d)
 				basename = os.path.basename(backup)
-				backup_creation.append( [ backup, basename, datetime.date.fromtimestamp( os.stat(backup).st_ctime ) ] )
+				backup_creation.append( [ backup, basename, datetime.date.fromtimestamp( os.stat(backup).st_ctime ), datetime.date.fromtimestamp( os.stat(backup).st_mtime ) ] )
 			break
 			
 		return render_to_response("index.html", {"keychainData":self.keychainData, "wifiData":self.wifiData, "current_Backup":self.currentBackup, "backup_creation":backup_creation, "all_backups":self.all_backups, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec } )

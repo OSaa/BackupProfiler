@@ -5,13 +5,13 @@
           // $.post( "{% url 'update' %}", { backupSelected: event.target.id }, function(data){
           //   alert(data)
           // } )
-
           $.ajax({
                type:"POST",
                url: "{% url 'update' %}",
                data: { 
                  backupSelected: event.target.id
                },
+               dataType: "json",
                "success": function(data){
                   alert(data)
                   // console.log()
