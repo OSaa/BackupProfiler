@@ -71,10 +71,17 @@
 
 		          <div class="row placeholders">
 	          		<div style="display:inline;">
-	          			  <p style="margin-left:4%; display:inline; font-size:20px;"><b>Last Accessed</b></p> <p style="display:inline;margin-left:10%; font-size:20px;"><b>Backup</b></p>
-	          			  <br><br>
-				          {% for url, name,creation in backup_creation%}
-		          			<li class="download" style="list-style-type: none; margin-left:5%;cursor: pointer;"><h4 id="{{url}}" style="display:inline;">{{creation}}</h4><p  id="{{url}}" style="display:inline;margin-left:3%">{{name}}</p></li> </br>
+                        <p style="margin-left:4%; display:inline; font-size:20px;"><b>Last Modified</b></p>
+                        <p style="margin-left:4%; display:inline; font-size:20px;"><b>Last Accessed</b></p>
+                        <p style="display:inline;margin-left:10%; font-size:20px;"><b>Backup</b></p>
+                        <br><br>
+				          {% for url, name, creation, modified in backup_creation%}
+		          			<li class="download" style="list-style-type: none; cursor: pointer;">
+                                  <p id="{{url}}" style="margin-left:4%; display:inline; font-size:16px;">{{modified}}</p>
+                                  <p id="{{url}}" style="margin-left:4%; display:inline; font-size:16px;">{{creation}}</p>
+                                  <p id="{{url}}" style="margin-left:4%; display:inline; font-size:16px;">{{name}}</p>
+                            </li>
+                            </br>
 				          {% endfor%}
 	          		</div>
 			      </div><!--/row-->
