@@ -8,25 +8,9 @@ import strftime_1900
 from PIL import Image
 from PIL.ExifTags import TAGS
 import random
-# from HTMLParser import HTMLParser
 
 # Because of CSV Error generated: _csv.Error: field larger than field limit (131072)
 csv.field_size_limit(sys.maxsize)
-
-# Removes HTML tags from strings
-# class MLStripper(HTMLParser):
-#     def __init__(self):
-#         self.reset()
-#         self.fed = []
-#     def handle_data(self, d):
-#         self.fed.append(d)
-#     def get_data(self):
-#         return '\n'.join(self.fed)
-
-# def strip_tags(html):
-#     s = MLStripper()
-#     s.feed(html)
-#     return s.get_data()
 
 class Data_Extraction():
     def __init__(self, mainDirs):
