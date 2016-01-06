@@ -8,9 +8,25 @@ import strftime_1900
 from PIL import Image
 from PIL.ExifTags import TAGS
 import random
+# from HTMLParser import HTMLParser
 
 # Because of CSV Error generated: _csv.Error: field larger than field limit (131072)
 csv.field_size_limit(sys.maxsize)
+
+# Removes HTML tags from strings
+# class MLStripper(HTMLParser):
+#     def __init__(self):
+#         self.reset()
+#         self.fed = []
+#     def handle_data(self, d):
+#         self.fed.append(d)
+#     def get_data(self):
+#         return '\n'.join(self.fed)
+
+# def strip_tags(html):
+#     s = MLStripper()
+#     s.feed(html)
+#     return s.get_data()
 
 class Data_Extraction():
     def __init__(self, mainDirs):
@@ -21,6 +37,7 @@ class Data_Extraction():
         self.extract_ContactsInfo()
         self.extract_CalendarInfo()
 
+
         # Initializers
         self.numPeopleCalled = 0
         self.numPeopleSMS = 0
@@ -28,6 +45,53 @@ class Data_Extraction():
         self.mapData = list()
         self.imagePaths = list()
         self.extract_ImageData()
+        self.extract_NotesData()
+
+    def extract_NotesData(self):
+
+        self.notesTitles = dict()
+
+        notesdirectory = os.path.join(self.directoryExtracted, "Notes")
+
+        for filename in os.listdir(notesdirectory):
+            if filename == "notes.tsv":
+                with open(os.path.join(notesdirectory, filename), "rb") as csvfile:
+                    reader = csv.reader(csvfile, delimiter='\t', quotechar="|")
+
+                    for row in reader:
+                        if len(row) > 0:
+                            title = row[0]
+                            author = row[1]
+                            c_date = row[2]
+
+                            obj = datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S")
+
+                            try:
+                                formatted = obj.strftime("%b %d, %Y %H:%M:%S")
+                                creation_date = formatted
+                            except:
+                                formatted = strftime_1900.strftime_1900(obj, "%b %d, %Y %H:%M:%S")
+                                creation_date = formatted
+
+                            m_date = row[3]
+
+                            obj = datetime.strptime(m_date, "%Y-%m-%d %H:%M:%S")
+
+                            try:
+                                formatted = obj.strftime("%b %d, %Y %H:%M:%S")
+                                modification_date = formatted
+                            except:
+                                formatted = strftime_1900.strftime_1900(obj, "%b %d, %Y %H:%M:%S")
+                                modification_date = formatted
+
+                            note_body = row[4]
+                            # note_body = strip_tags(row[4])
+
+                            self.notesTitles[title] = [creation_date, modification_date, note_body]
+
+    def returnNotesTitles(self):
+
+        return self.notesTitles
 
     def extract_ImageData(self):
         ImagesDir = os.path.join(self.directoryExtracted, "Images")

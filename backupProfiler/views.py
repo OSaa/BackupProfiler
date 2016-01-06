@@ -93,11 +93,8 @@ class ViewsHandler():
 			self.wirelessSSID = None
 			self.wifiData = None
 
-
-
 	@csrf_exempt
 	def update(self, currBackup):
-		print currBackup
 		self.currentBackup = currBackup
 
 		self.extractor = extraction.Data_Extraction(self.currentBackup)
@@ -308,6 +305,12 @@ class ViewsHandler():
 		image_paths = self.extractor.returnImagePaths()
 
 		return render_to_response("imagesTemplate.html", {"keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "image_paths":image_paths, "map_Data":map_Data, "map_table":map_table, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec})
+
+	def notesPage(self, request):
+
+		notesTitles = self.extractor.returnNotesTitles()
+
+		return render_to_response("NotesTemplate.html", {"notestitles": notesTitles, "keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec } )
 
 
 
