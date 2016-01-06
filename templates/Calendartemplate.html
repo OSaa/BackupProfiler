@@ -48,12 +48,12 @@
 		        
 		         <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
 		           
-		            <ul class="nav nav-sidebar">
-		              <li><a href="{% url 'overview' %}">Overview</a></li>
+		            <ul class="nav nav-sidebar"><li><a href="{% url 'overview' %}">Overview</a></li>
 		              <li><a href="{% url 'top10' %}">Top 10</a></li>
-		              <li><a href="{% url 'smsdata' %}">SMS Data</a></li>
-		              <li><a href="{% url 'calldata' %}">Call Data</a></li>
-		              <li class="active"><a href="{% url 'calendardata' %}">Calendar Data</a></li>
+		              <li><a href="{% url 'smsdata' %}">SMS History</a></li>
+		              <li><a href="{% url 'calldata' %}">Call History</a></li>
+		              <li class="active"><a href="{% url 'calendardata' %}">Calendar</a></li>
+		              <li><a href="{% url 'notesdata' %}">Notes</a></li>
 		            </ul>
 		            <ul class="nav nav-sidebar">
 		              <li><a href="{% url 'appdata' %}">App Data</a></li>
@@ -61,16 +61,6 @@
 		              <li><a href="{% url 'accounts' %}">Accounts</a></li>
 		              <li><a href="{% url 'appplists' %}">App Plists</a></li>
 		            </ul>
-		            {% if wifiData or keychainData %}
-		            <ul class="nav nav-sidebar">
-		              {% if wifiData %}
-		              <li><a href="{% url 'wifi' %}">WiFi</a></li>
-			          {% endif %}
-			          {% if keychainData %}
-		              <li><a href="{% url 'keychain' %}">Keychain</a></li>
-		              {% endif %}
-		            </ul>
-		            {% endif %}
 		            <ul class="nav nav-sidebar">
 		              {% if safari_data %}
 		              <li><a href="{% url 'safaridata' %}">Safari Searches</a></li>
@@ -82,6 +72,16 @@
 		              <li><a href="{% url 'hopstopdata' %}">HopStop</a></li>
 		              {% endif %}
 		            </ul>
+		            {% if wifiData or keychainData %}
+		            <ul class="nav nav-sidebar">
+		              {% if wifiData %}
+		              <li><a href="{% url 'wifi' %}">WiFi</a></li>
+			          {% endif %}
+			          {% if keychainData %}
+		              <li><a href="{% url 'keychain' %}">Keychain</a></li>
+		              {% endif %}
+		            </ul>
+		            {% endif %}
 		            <ul class="nav nav-sidebar">
 		              <li><a href="{% url 'images' %}">Images</a></li>
 		            </ul>
