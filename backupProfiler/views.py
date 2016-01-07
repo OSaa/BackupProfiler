@@ -95,6 +95,7 @@ class ViewsHandler():
 
 	@csrf_exempt
 	def update(self, currBackup):
+		print currBackup
 		self.currentBackup = currBackup
 
 		self.extractor = extraction.Data_Extraction(self.currentBackup)
@@ -130,12 +131,19 @@ class ViewsHandler():
 		self.wirelessSSID = self.plistParser.wireless_SSID()
 
 		''' Return user to overview page with all data updated to point to selected/just created backup '''
+		print "hit"
 
-		# return HttpResponse( json.dumps( {"keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "guid":guid, "device_name": devicename, "backup_date": backupdate, "phone_number": phoneNum, "producttype": producttype, "prod_version": iosV, "serial_num": serial, "uid": uid, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec} ), content_type='application/json' )
-		# return HttpResponse( json.dumps( {"success": "success"} ), content_type='application/json' )
-		# return render_to_response("overview.html", {"keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "guid":guid, "device_name": devicename, "backup_date": backupdate, "phone_number": phoneNum, "producttype": producttype, "prod_version": iosV, "serial_num": serial, "uid": uid, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec})
-		return HttpResponse( {"success":"success"})
-		# return render_to_response("overview.html", {"success":"success"})
+	@csrf_exempt
+	def updateCurrent(self, request):
+		if request.method == "POST":
+			if request.POST['backupSelected']:
+				self.update(request.POST['backupSelected'])
+
+				# return HttpResponse( json.dumps( {"keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "guid":guid, "device_name": devicename, "backup_date": backupdate, "phone_number": phoneNum, "producttype": producttype, "prod_version": iosV, "serial_num": serial, "uid": uid, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec} ), content_type='application/json' )
+				# return HttpResponse( json.dumps( {"success": "success"} ), content_type='application/json' )
+				# return render_to_response("overview.html", {"keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "guid":guid, "device_name": devicename, "backup_date": backupdate, "phone_number": phoneNum, "producttype": producttype, "prod_version": iosV, "serial_num": serial, "uid": uid, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec})
+				# return HttpResponse( {"success":"success"})
+				# return render_to_response("overview.html", {"success":"success"})
 
 	def extractedBackups(self):
 		extractedBackups = "static/backups/"
