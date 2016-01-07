@@ -8,6 +8,7 @@ import strftime_1900
 from PIL import Image
 from PIL.ExifTags import TAGS
 import random
+import geocoder
 
 # Because of CSV Error generated: _csv.Error: field larger than field limit (131072)
 csv.field_size_limit(sys.maxsize)
@@ -69,7 +70,6 @@ class Data_Extraction():
                                 modification_date = formatted
 
                             note_body = row[4]
-                            # note_body = strip_tags(row[4])
 
                             self.notesTitles[title] = [creation_date, modification_date, note_body]
 
@@ -81,6 +81,7 @@ class Data_Extraction():
         ImagesDir = os.path.join(self.directoryExtracted, "Images")
         JPGdir = os.path.join(ImagesDir, "JPG")
         imageDict = dict()
+        self.imageAddresses = list()
         markers = ["blue", "green", "pink"]
 
         if JPGdir:
@@ -141,6 +142,8 @@ class Data_Extraction():
 
                     self.mapData.append( [lat, lon, markColor] )
 
+                    g = geocoder.google([lat, lon], method='reverse')
+                    self.imageAddresses.append( str(g.json["address"]))
 
                 if meta.get("DateTime"):
                     unformatted = meta.get("DateTime").encode('utf-8')
@@ -197,6 +200,9 @@ class Data_Extraction():
 
     def returnImagePaths(self):
         return self.imagePaths
+
+    def returnImageAddresses(self):
+        return self.imageAddresses
 
     def extract_CalendarInfo(self):
 

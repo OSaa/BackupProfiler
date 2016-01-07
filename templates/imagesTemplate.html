@@ -5,6 +5,7 @@
 
 	<script>
 		$(document).ready(function() {
+
 			$('ul.nav-tabs li a').click(function (e) {
 				$('ul.nav-tabs li.active').removeClass('active')
 				$(this).parent('li').addClass('active')
@@ -23,6 +24,18 @@
 
 				$( "#links" ).append( "<a href='/" + pic + "' data-gallery><img height='40' width='40' src='/" + pic + "' /></a>");
 			}
+
+	        var loc_addr
+		    temp_array = new Array( {{ image_addresses|safe }} )
+
+		    if (temp_array.length > 0){
+		    	loc_addr = temp_array[0]
+		    }
+
+		    for (var i=0; i < loc_addr.length; i++){
+				$("#loc_addr").append( loc_addr[i] + "<br><br>" )
+			}
+
 		});
 		google.load('visualization', '1.1', {packages: ['map']});
 	    google.setOnLoadCallback(drawMap);
@@ -135,6 +148,10 @@
 						   	  	<br/>
 						   	  	<div id="map_div" style="height: 500px; width: 900px"></div>
 						   	  	<h4>*Displays locations where pictures were taken.</h4>
+						   	  	{% if image_addresses %}
+							   	  	<h3 class="pull-left" >Photo Locations</h3><br><br><br>
+							   	  	<div class="pull-left" style="text-align: left" id="loc_addr"></div>
+						   	  	{% endif %}
 						   	  </div>
 						   	  <div class="tab-pane" id="Table">
 						   	  	<br/>

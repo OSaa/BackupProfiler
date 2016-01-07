@@ -304,8 +304,9 @@ class ViewsHandler():
 		map_table = self.extractor.returnImageTable()
 		map_Data = self.extractor.returnMapData()
 		image_paths = self.extractor.returnImagePaths()
+		image_addresses = self.extractor.returnImageAddresses()
 
-		return render_to_response("imagesTemplate.html", {"keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "image_paths":image_paths, "map_Data":map_Data, "map_table":map_table, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec})
+		return render_to_response("imagesTemplate.html", {"image_addresses":image_addresses, "keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "image_paths":image_paths, "map_Data":map_Data, "map_table":map_table, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec})
 
 	def notesPage(self, request):
 
