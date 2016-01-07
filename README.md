@@ -3,23 +3,19 @@ BackupProfiler
 
 ##### Dependencies
 
-Pillow 2.1.0  `pip install Pillow`
+Pillow 2.1.0  `https://pypi.python.org/pypi/Pillow/2.1.0`
 
-    https://pypi.python.org/pypi/Pillow/2.1.0
+    pip install Pillow
 
-Django 1.7+ `pip install django`
+Django 1.7+ `https://docs.djangoproject.com/en/1.8/howto/windows/`
 
-    https://docs.djangoproject.com/en/1.8/howto/windows/
+    pip install django
 
-Plistlib 
+Plistlib `https://docs.python.org/2.7/library/plistlib.html`
 
-    https://docs.python.org/2.7/library/plistlib.html
+Biplist `https://pypi.python.org/pypi/biplist/0.2`
 
-Biplist 
+Geocoder `http://geocoder.readthedocs.org/api.html#install`
 
-    https://pypi.python.org/pypi/biplist/0.2
-
-Geocoder `pip install geocoder`
-
-    http://geocoder.readthedocs.org/api.html#install
+    pip install geocoder
     
