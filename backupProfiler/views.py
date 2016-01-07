@@ -129,6 +129,8 @@ class ViewsHandler():
 		# WiFi Specific Data
 		self.wirelessSSID = self.plistParser.wireless_SSID()
 
+		''' Return user to overview page with all data updated to point to selected/just created backup '''
+
 		# return HttpResponse( json.dumps( {"keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "guid":guid, "device_name": devicename, "backup_date": backupdate, "phone_number": phoneNum, "producttype": producttype, "prod_version": iosV, "serial_num": serial, "uid": uid, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec} ), content_type='application/json' )
 		# return HttpResponse( json.dumps( {"success": "success"} ), content_type='application/json' )
 		# return render_to_response("overview.html", {"keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "guid":guid, "device_name": devicename, "backup_date": backupdate, "phone_number": phoneNum, "producttype": producttype, "prod_version": iosV, "serial_num": serial, "uid": uid, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec})
@@ -176,17 +178,16 @@ class ViewsHandler():
 		return render_to_response("index.html", {"keychainData":self.keychainData, "wifiData":self.wifiData, "current_Backup":self.currentBackup, "backup_creation":backup_creation, "all_backups":self.all_backups, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec } )
 
 	@csrf_exempt
-	def updateCurrent(self, request):
-		if request.method == "POST":
-			if request.POST['backupSelected']:
-				self.update(request.POST['backupSelected'])
-
-	@csrf_exempt
 	def createBackup(self, request):
 		if request.method == "POST":
 			if request.POST['createBackup']:
-				iosRecovery.main( request.POST['createBackup'] )
-				self.refresh_data()
+				backup_location = iosRecovery.main( request.POST['createBackup'] )
+
+				# Return already exists message to user/web app for user to know
+				if backup_location == "Already Exists":
+					print backup_location
+				else:
+					self.update( backup_location )
 
 	@csrf_exempt
 	def overviewPage(self, request):

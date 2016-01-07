@@ -547,8 +547,11 @@ def main(newBackup):
 		        print "Getting Images"
 		        getImages(pathName, Jpgoutputdir, Pngoutputdir)
 		        print "Done Getting Images"
+
+                return dest
         else:
             print str(dest) + " Already Exists."
+            return "Already Exists"
 
 
 if __name__ == '__main__':
