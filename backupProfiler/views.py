@@ -50,8 +50,8 @@ class ViewsHandler():
 			self.CallsData = self.extractor.extract_CallInfo()
 			self.imageParse = self.extractor.extract_ImageData()
 
-			appDataPath = os.path.join(self.currentBackup, "AppData")
-			self.parser = AppParser.BackupParser( appDataPath )
+			self.appDataPath = os.path.join(self.currentBackup, "AppData")
+			self.parser = AppParser.BackupParser( self.appDataPath )
 
 			''' Biggest Apps 
 				- Safari 
@@ -67,7 +67,7 @@ class ViewsHandler():
 			self.hostop_rec = self.parser.returnHopStopRec()
 
 			# All Plist Data
-			self.plistParser = PlistParser.PlistParser(appDataPath)
+			self.plistParser = PlistParser.PlistParser(self.appDataPath)
 
 			# WiFi Data
 			self.wifiData = self.plistParser.wifiPlists()
@@ -95,55 +95,59 @@ class ViewsHandler():
 
 	@csrf_exempt
 	def update(self, currBackup):
-		print currBackup
-		self.currentBackup = currBackup
+		try:
+			self.currentBackup = currBackup
 
-		self.extractor = extraction.Data_Extraction(self.currentBackup)
-		self.SMSdata = self.extractor.extract_SMSInfo()
-		self.CallsData = self.extractor.extract_CallInfo()
-		self.imageParse = self.extractor.extract_ImageData()
+			self.extractor = extraction.Data_Extraction(self.currentBackup)
+			self.SMSdata = self.extractor.extract_SMSInfo()
+			self.CallsData = self.extractor.extract_CallInfo()
+			self.imageParse = self.extractor.extract_ImageData()
 
-		self.parser = AppParser.BackupParser( os.path.join(self.currentBackup, "AppData") )
+			self.parser = AppParser.BackupParser( os.path.join(self.currentBackup, "AppData") )
 
-		''' Biggest Apps 
-			- Safari 
-			- Snapchat
-			- HopStop
-		'''
-		self.safariData = self.parser.returnSafariData()
-		self.snap_data = self.parser.returnSnapData()
-		self.snap_friends = self.parser.returnSnapFriends()
-		self.snap_rec = self.parser.snapRecent()
+			print "app parser done"
 
-		self.hopstop_data = self.parser.returnHopStop()
-		self.hostop_rec = self.parser.returnHopStopRec()
+			''' Biggest Apps 
+				- Safari 
+				- Snapchat
+				- HopStop
+			'''
+			self.safariData = self.parser.returnSafariData()
+			self.snap_data = self.parser.returnSnapData()
+			self.snap_friends = self.parser.returnSnapFriends()
+			self.snap_rec = self.parser.snapRecent()
 
-		# All Plist Data
-		self.plistParser = PlistParser.PlistParser(appDataPath)
+			self.hopstop_data = self.parser.returnHopStop()
+			self.hostop_rec = self.parser.returnHopStopRec()
 
-		# WiFi Data
-		self.wifiData = self.plistParser.wifiPlists()
+			# All Plist Data
+			self.plistParser = PlistParser.PlistParser(self.appDataPath)
 
-		# Keychain Data
-		self.keychainData = self.plistParser.KeyChainPlist()
+			# WiFi Data
+			self.wifiData = self.plistParser.wifiPlists()
 
-		# WiFi Specific Data
-		self.wirelessSSID = self.plistParser.wireless_SSID()
+			# Keychain Data
+			self.keychainData = self.plistParser.KeyChainPlist()
 
-		''' Return user to overview page with all data updated to point to selected/just created backup '''
-		print "hit"
+			# WiFi Specific Data
+			self.wirelessSSID = self.plistParser.wireless_SSID()
+
+		except Exception as e:
+			print e
 
 	@csrf_exempt
 	def updateCurrent(self, request):
 		if request.method == "POST":
 			if request.POST['backupSelected']:
 				self.update(request.POST['backupSelected'])
-
+				
+				''' Return user to overview page with all data updated to point to selected/just created backup '''
 				# return HttpResponse( json.dumps( {"keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "guid":guid, "device_name": devicename, "backup_date": backupdate, "phone_number": phoneNum, "producttype": producttype, "prod_version": iosV, "serial_num": serial, "uid": uid, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec} ), content_type='application/json' )
 				# return HttpResponse( json.dumps( {"success": "success"} ), content_type='application/json' )
 				# return render_to_response("overview.html", {"keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "guid":guid, "device_name": devicename, "backup_date": backupdate, "phone_number": phoneNum, "producttype": producttype, "prod_version": iosV, "serial_num": serial, "uid": uid, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec})
-				# return HttpResponse( {"success":"success"})
+				return HttpResponse( {"success":"success"})
 				# return render_to_response("overview.html", {"success":"success"})
+				# return render_to_response({"success":"success"})
 
 	def extractedBackups(self):
 		extractedBackups = "static/backups/"
