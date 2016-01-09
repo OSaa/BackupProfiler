@@ -1,7 +1,7 @@
 BackupProfiler
 =======
 
-##### Dependencies
+#### Dependencies
 
 Pillow 2.1.0  https://pypi.python.org/pypi/Pillow/2.1.0
 
@@ -20,4 +20,4 @@ Geocoder http://geocoder.readthedocs.org/api.html#install
     pip install geocoder
 
 ### Step 1: Run Application
-    `sudo python manage.py runserver`
+    sudo python manage.py runserver
