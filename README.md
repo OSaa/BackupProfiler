@@ -3,7 +3,7 @@ BackupProfiler
 
 **Step 1**: Run Application
     
-    'sudo python manage.py runserve
+    sudo python manage.py runserver
     
 **Step 2**: Application finds location of backups
 
