@@ -5,9 +5,9 @@ BackupProfiler
     
     sudo python manage.py runserver
     
-**Step 2**: Application finds location of backups
+**Step 2**: Application finds location of backups on computer
 
-**Step 3**: User selects backups to extract from homepage
+**Step 3**: From the homepage, user selects backup to extract data from
 
 **Step 4**: Application uses iosRecovery.py script to extract data from backup
 
