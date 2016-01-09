@@ -3,7 +3,7 @@ BackupProfiler
 
 **Step 1**: Run Application
     
-    sudo python manage.py runserver
+    'sudo python manage.py runserve
     
 **Step 2**: Application finds location of backups
 
@@ -13,7 +13,9 @@ BackupProfiler
 
 **Step 5**: Once all data is extracted, user can use the web application to sift through information
 
-##### Dependencies
+
+
+#### Dependencies
 
 Pillow 2.1.0  https://pypi.python.org/pypi/Pillow/2.1.0
 
