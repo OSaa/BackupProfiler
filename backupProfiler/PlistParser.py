@@ -296,20 +296,22 @@ class PlistParser():
 
 	def getInfoPlist(self):
 		infoPlist = self.appDir + "/Info.plist"
+        info = None
+        
+        try:
+            info = biplist.readPlist(infoPlist)
+        except:
+            try:
+                info = plistlib.readPlist(infoPlist)
+            except:
+                print "Error reading Info.plist"
 
-		try:
-			info = biplist.readPlist(infoPlist)
-		except:
-			try:
-				info = plistlib.readPlist(infoPlist)
-			except:
-				print "Error reading Info.plist"
-		
-		InstalledApps = info.get("Installed Applications")
+        if info:
+            InstalledApps = info.get("Installed Applications")
 
-		for app in InstalledApps:
-			data = ("AppDomain-" + app + "-Library/Preferences/" + app + ".plist")
-			encypted_file = hashlib.sha1(data).hexdigest()
-			if (not self.encryptedDict.has_key(encypted_file)):
-				self.encryptedDict[encypted_file] = app
+            for app in InstalledApps:
+                data = ("AppDomain-" + app + "-Library/Preferences/" + app + ".plist")
+                encypted_file = hashlib.sha1(data).hexdigest()
+                if (not self.encryptedDict.has_key(encypted_file)):
+                    self.encryptedDict[encypted_file] = app
 
