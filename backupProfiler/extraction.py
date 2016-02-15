@@ -56,57 +56,58 @@ class Data_Extraction():
 
         dbsdirectory = os.path.join(self.directoryExtracted, "DBs")
 
-        for sqlDB in os.listdir(dbsdirectory):
-            if sqlDB[-3:] == "sql" or sqlDB[-8:] == "sqlitedb" or sqlDB[-6:] == "sqlite" or sqlDB[-2:] == "db":
+        if os.path.exists(dbsdirectory):
+            for sqlDB in os.listdir(dbsdirectory):
+                if sqlDB[-3:] == "sql" or sqlDB[-8:] == "sqlitedb" or sqlDB[-6:] == "sqlite" or sqlDB[-2:] == "db":
 
-                fullpath_sqlDB = os.path.join(dbsdirectory, sqlDB)
+                    fullpath_sqlDB = os.path.join(dbsdirectory, sqlDB)
 
-                conn = sqlite3.connect(fullpath_sqlDB)
-                c = conn.cursor()
+                    conn = sqlite3.connect(fullpath_sqlDB)
+                    c = conn.cursor()
 
-                # print "---------- READING ----------" 
-                # print "\t\t" + sqlDB
-                try:
-                    for row in c.execute("SELECT name FROM sqlite_master WHERE type='table';"):
-                        # Separates name of DB file's path and name
-                        sql_dict_name = sqlDB.split("~")[0] + " " + sqlDB.split("~")[1]
+                    # print "---------- READING ----------" 
+                    # print "\t\t" + sqlDB
+                    try:
+                        for row in c.execute("SELECT name FROM sqlite_master WHERE type='table';"):
+                            # Separates name of DB file's path and name
+                            sql_dict_name = sqlDB.split("~")[0] + " " + sqlDB.split("~")[1]
 
-                        # Add DB name to dictionary if it can be opened - AKA after a query is executed on the file
-                        if sql_dict_name not in self.db_dict:
-                            self.db_dict[sql_dict_name] = dict()
+                            # Add DB name to dictionary if it can be opened - AKA after a query is executed on the file
+                            if sql_dict_name not in self.db_dict:
+                                self.db_dict[sql_dict_name] = dict()
 
-                        # Get each table name and add it to the dictionary
-                        table_name = str(row[0])
-                        # print "\t\tTable: " + table_name
+                            # Get each table name and add it to the dictionary
+                            table_name = str(row[0])
+                            # print "\t\tTable: " + table_name
 
-                        if table_name not in self.db_dict[sql_dict_name]:
-                            # Each table will have column names and table data added in a list format
-                            self.db_dict[sql_dict_name][table_name] = list()
+                            if table_name not in self.db_dict[sql_dict_name]:
+                                # Each table will have column names and table data added in a list format
+                                self.db_dict[sql_dict_name][table_name] = list()
 
-                        # Will contain all table data
-                        table_data = list() 
-                        
-                        # Table Cursor - used to get all info in table
-                        table_c = conn.cursor()
-                        for table_row in table_c.execute("SELECT * FROM %s" % table_name ):
-                            # Format all table data - most in unicode that is then converted to str
-                            # self.clean_db_data - helper function that formats data
-                            temp = list()
+                            # Will contain all table data
+                            table_data = list() 
+                            
+                            # Table Cursor - used to get all info in table
+                            table_c = conn.cursor()
+                            for table_row in table_c.execute("SELECT * FROM %s" % table_name ):
+                                # Format all table data - most in unicode that is then converted to str
+                                # self.clean_db_data - helper function that formats data
+                                temp = list()
 
-                            for item in table_row:
-                                temp.append( self.clean_db_data(item) )
+                                for item in table_row:
+                                    temp.append( self.clean_db_data(item) )
 
-                            table_data.append( temp )
+                                table_data.append( temp )
 
-                        # Get all column names
-                        col_names = [str(description[0]) for description in table_c.description]
+                            # Get all column names
+                            col_names = [str(description[0]) for description in table_c.description]
 
-                        # Adding column names and all table data to dictionary
-                        self.db_dict[sql_dict_name][table_name].append( [col_names, table_data] )
+                            # Adding column names and all table data to dictionary
+                            self.db_dict[sql_dict_name][table_name].append( [col_names, table_data] )
 
-                except:
-                    pass
-                    # print "****** Could not read: " + sqlDB
+                    except:
+                        pass
+                        # print "****** Could not read: " + sqlDB
 
     def returnDBdata(self):
         return self.db_dict
@@ -395,23 +396,24 @@ class Data_Extraction():
 
         Contactsdirectory = os.path.join(self.directoryExtracted, "Contacts")
 
-        for filename in os.listdir(Contactsdirectory):
-            if filename == "contacts.tsv":
-                with open(os.path.join(Contactsdirectory, filename), "rb") as csvfile:
-                    reader = csv.reader(csvfile, delimiter='\t', quotechar="|")
+        if os.path.exists(Contactsdirectory):
+            for filename in os.listdir(Contactsdirectory):
+                if filename == "contacts.tsv":
+                    with open(os.path.join(Contactsdirectory, filename), "rb") as csvfile:
+                        reader = csv.reader(csvfile, delimiter='\t', quotechar="|")
 
-                    for row in reader:
-                        if row and row[0] != " ":
-                            if row[1] != "N/A":
-                                fullName = row[0] + " " + row[1]
-                            else:
-                                fullName = row[0]
+                        for row in reader:
+                            if row and row[0] != " ":
+                                if row[1] != "N/A":
+                                    fullName = row[0] + " " + row[1]
+                                else:
+                                    fullName = row[0]
 
-                            allNums = row[2].split()
+                                allNums = row[2].split()
 
-                            for item in allNums:
-                                if not self.contactsDict.has_key(item):
-                                    self.contactsDict[item] = fullName
+                                for item in allNums:
+                                    if not self.contactsDict.has_key(item):
+                                        self.contactsDict[item] = fullName
 
     def extract_CallInfo(self):
         callDict = dict()
@@ -485,47 +487,48 @@ class Data_Extraction():
 
         SMSdirectory = os.path.join(self.directoryExtracted, "SMS")
 
-        for filename in os.listdir(SMSdirectory):
-            temp = os.path.join(SMSdirectory, "sms.tsv")
-            if filename == "sms.tsv":
-                if os.stat( temp ).st_size != 0:
-                    with open(os.path.join(SMSdirectory, filename), "rU") as csvfile:
-                        reader = csv.reader(csvfile, delimiter='\t', quotechar="|")
+        if os.path.exists(SMSdirectory):
+            for filename in os.listdir(SMSdirectory):
+                temp = os.path.join(SMSdirectory, "sms.tsv")
+                if filename == "sms.tsv":
+                    if os.stat( temp ).st_size != 0:
+                        with open(os.path.join(SMSdirectory, filename), "rU") as csvfile:
+                            reader = csv.reader(csvfile, delimiter='\t', quotechar="|")
 
-                        for row in reader:
-                            if row and row[0] != " ":
-                                sent_rec = row[0]
-                                date = row[1]
-                                phoneNum = row[2]
-                                text = row[3]
+                            for row in reader:
+                                if row and row[0] != " ":
+                                    sent_rec = row[0]
+                                    date = row[1]
+                                    phoneNum = row[2]
+                                    text = row[3]
 
-                                obj = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+                                    obj = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
 
-                                try:
-                                    formatted = obj.strftime("%b %d, %Y %H:%M:%S")
-                                except:
-                                    formatted = strftime_1900.strftime_1900(obj, "%b %d, %Y %H:%M:%S")
+                                    try:
+                                        formatted = obj.strftime("%b %d, %Y %H:%M:%S")
+                                    except:
+                                        formatted = strftime_1900.strftime_1900(obj, "%b %d, %Y %H:%M:%S")
 
 
-                                if self.contactsDict.has_key(phoneNum):
-                                    name = self.contactsDict[phoneNum]
-                                else:
-                                    name = "N/A"
-
-                                self.SMStableList.append( [name, phoneNum, sent_rec, formatted, text] )
-
-                                if self.contactsDict.has_key(phoneNum):
-                                    name = self.contactsDict[phoneNum]
-
-                                    if numberDict.has_key(name):
-                                        numberDict[name] += 1
+                                    if self.contactsDict.has_key(phoneNum):
+                                        name = self.contactsDict[phoneNum]
                                     else:
-                                        numberDict[name] = 1
-                                else:
-                                    if numberDict.has_key(phoneNum):
-                                        numberDict[phoneNum] += 1
+                                        name = "N/A"
+
+                                    self.SMStableList.append( [name, phoneNum, sent_rec, formatted, text] )
+
+                                    if self.contactsDict.has_key(phoneNum):
+                                        name = self.contactsDict[phoneNum]
+
+                                        if numberDict.has_key(name):
+                                            numberDict[name] += 1
+                                        else:
+                                            numberDict[name] = 1
                                     else:
-                                        numberDict[phoneNum] = 1
+                                        if numberDict.has_key(phoneNum):
+                                            numberDict[phoneNum] += 1
+                                        else:
+                                            numberDict[phoneNum] = 1
 
         self.numPeopleSMS = len(numberDict)
         top10 = dict()
