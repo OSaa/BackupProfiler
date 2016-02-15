@@ -106,8 +106,6 @@ class ViewsHandler():
 
             self.parser = AppParser.BackupParser( os.path.join(self.currentBackup, "AppData") )
 
-            print "app parser done"
-
             ''' Biggest Apps 
                 - Safari 
                 - Snapchat

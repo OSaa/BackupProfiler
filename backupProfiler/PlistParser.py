@@ -21,6 +21,7 @@ import strftime_1900
 class PlistParser():
 	def __init__(self, backup):
 		print "Running PlistParser.py"
+		
 		self.all_plist_data = list()
 		self.encryptedDict = dict()
 
@@ -299,26 +300,26 @@ class PlistParser():
 			self.plist_list.append( row )
 
 	def getInfoPlist(self):
+		info = None
 		infoPlist = self.appDir + "/Info.plist"
-        info = None
-        
-        try:
-            info = biplist.readPlist(infoPlist)
-        except:
-            try:
-                info = plistlib.readPlist(infoPlist)
-            except:
-                print "Error reading Info.plist"
 
-        if info:
-            InstalledApps = info.get("Installed Applications")
+		try:
+			info = biplist.readPlist(infoPlist)
+		except:
+			try:
+				info = plistlib.readPlist(infoPlist)
+			except:
+				print "PlistParser.py: Error reading Info.plist"
 
-            for app in InstalledApps:
-            	# Using known app path to find SHA1 hash and associate
-            	# that to app name in 'Installed Applications'
-                data = ("AppDomain-" + app + "-Library/Preferences/" + app + ".plist")
-                encypted_file = hashlib.sha1(data).hexdigest()
-                if (not self.encryptedDict.has_key(encypted_file)):
-                    self.encryptedDict[encypted_file] = app
-                    print encypted_file, app
+		if info:
+			InstalledApps = info.get("Installed Applications")
+
+			for app in InstalledApps:
+				# Using known app path to find SHA1 hash and associate
+				# that to app name in 'Installed Applications'
+				data = ("AppDomain-" + app + "-Library/Preferences/" + app + ".plist")
+				encypted_file = hashlib.sha1(data).hexdigest()
+				if (not self.encryptedDict.has_key(encypted_file)):
+					self.encryptedDict[encypted_file] = app
+					print encypted_file, app
 
