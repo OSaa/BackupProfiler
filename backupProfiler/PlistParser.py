@@ -314,8 +314,11 @@ class PlistParser():
             InstalledApps = info.get("Installed Applications")
 
             for app in InstalledApps:
+            	# Using known app path to find SHA1 hash and associate
+            	# that to app name in 'Installed Applications'
                 data = ("AppDomain-" + app + "-Library/Preferences/" + app + ".plist")
                 encypted_file = hashlib.sha1(data).hexdigest()
                 if (not self.encryptedDict.has_key(encypted_file)):
                     self.encryptedDict[encypted_file] = app
+                    print encypted_file, app
 

@@ -107,7 +107,6 @@ class Data_Extraction():
 
                     except:
                         pass
-                        # print "****** Could not read: " + sqlDB
 
     def returnDBdata(self):
         return self.db_dict

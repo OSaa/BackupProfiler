@@ -36,7 +36,7 @@ from django.core.urlresolvers import reverse
 '''
 
 class ViewsHandler():
-    parser = None
+    # parser = None
     def __init__(self):
         self.extractedBackups()
         
@@ -45,6 +45,7 @@ class ViewsHandler():
         if len(extracted) != 0:
             self.currentBackup = extracted[0][1]
 
+            # Initialize extraction.py
             self.extractor = extraction.Data_Extraction(self.currentBackup)
             self.SMSdata = self.extractor.extract_SMSInfo()
             self.CallsData = self.extractor.extract_CallInfo()

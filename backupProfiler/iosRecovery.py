@@ -83,7 +83,7 @@ def TOE(plist):
         return targetDir
 
     except:
-        print "** Info.plist error **"
+        print "iosRecovery.py: Info.plist error"
         return "None"
 
 
