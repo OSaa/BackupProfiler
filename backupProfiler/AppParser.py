@@ -137,134 +137,8 @@ class BackupParser():
 		deviceData.append( self.serialNumber )
 		deviceData.append( self.uid )
 		deviceData.append( self.guid )
-=======
-    def __init__(self, backup):
-        self.backupDir = backup
-
-        # App Name -- App Folder Name -- Status -- Installed -- Last Used -- Number of times used(Maybe)
-        self.allAppBasicData = dict()
-        self.deletedAppList = list()
-        self.recentSearches = dict()
-        self.usernames = list()
-        self.AppFolderNames = dict()
-        self.safariRecentSearches = list()
-        self.facebookItems = dict()
-
-        # Initializers
-        self.gasBudZips = list()
-        self.groupmeReturn = dict()
-        self.dunkinReturn = dict()
-        self.uberReturn = dict()
-        self.openTableReturn = dict()
-        self.openTableRecReturn = list()
-        self.appleMapReturn = dict()
-        self.whatsappReturn = dict()
-        self.linkedInReturn = dict()
-        self.snapchatReturn = dict()
-        self.snapchatFriends = list()
-        self.instaReturnDict = dict()
-        self.hopStopReturn = dict()
-        self.hopStopRec = list()
-        self.appleMailReturn = dict()
-        self.gMapDict = dict()
-        self.sunriseData = dict()
-        self.snapChatRecent = list()
-
-
-        self.openAppCSV()
-        self.getInfoPlist()
-        self.info_plist_parser()
-
-
-    ''' Make SHA1 Hash File into a plist File'''
-    def renameFile(self, filename):
-        fullPath = self.backupDir + "/" + filename
-        newname = os.rename(fullPath, fullPath + ".plist")
-        newname = fullPath + ".plist"
-
-    def openAppCSV(self):
-        fullpath = os.path.dirname(os.path.abspath(__file__))
-
-        for filename in os.listdir(fullpath):
-            if filename == "apps.csv":
-                with open(os.path.join(fullpath, filename), "Ub") as csvfile:
-                    reader = csv.reader(csvfile, delimiter=',', quotechar="|")
-
-                    for row in reader:
-                        
-                        # row[0] app name
-                        # row[1] app folder
-                        appFolder = row[1]
-                        appName = row[0]
-                        preinstalled = row[2]
-                        # row[2] if preinstalled
-
-                        if not self.AppFolderNames.has_key(row[1]):
-                            self.AppFolderNames[appFolder] = [appName, preinstalled]
-
-    def get_folder_name(self, folder):
-        if self.AppFolderNames.has_key(folder):
-            return self.AppFolderNames[folder] # returns list: [appName, preinstalled]
-        else:
-            return ["N/A","N/A"]
-
-
-    def getInfoPlist(self):
-        infoPlist = self.backupDir + "/Info.plist"
-        encryptedDict = dict()
-        info = None
-
-        try:
-            info = biplist.readPlist(infoPlist)
-        except:
-            try:
-                info = plistlib.readPlist(infoPlist)
-            except:
-                print "Error reading Info.plist"
-
-        if info:
-            self.DeviceName = info.get("Device Name")
-            self.LastBackupDate = info.get("Last Backup Date")
-            self.ownerNumber = info.get("Phone Number")
-            self.phoneType = info.get("Product Name")
-            self.iOS = info.get("Product Version")
-            self.serialNumber = info.get("Serial Number")
-            self.uid = info.get("Unique Identifier")
-            self.guid = info.get("GUID")
-            
-            InstalledApps = info.get("Installed Applications")
-
-            for app in InstalledApps:
-                data = ("AppDomain-" + app + "-Library/Preferences/" + app + ".plist")
-                data = hashlib.sha1(data).hexdigest()
-                if (not encryptedDict.has_key(data)):
-                    encryptedDict[data] = app
-            
-            LibraryApps = info.get('iTunes Settings')
-
-            for item in LibraryApps:
-                if item == "DeletedApplications":
-                        deletedApps = LibraryApps["DeletedApplications"]
-                        for dapp in deletedApps:
-                            self.deletedAppList.append(dapp)
-
-            return encryptedDict
-
-    def deviceInfo(self):
-        deviceData = list()
-
-        deviceData.append( self.DeviceName )
-        deviceData.append( self.LastBackupDate )
-        deviceData.append( self.ownerNumber )
-        deviceData.append( self.phoneType )
-        deviceData.append( self.iOS )
-        deviceData.append( self.serialNumber )
-        deviceData.append( self.uid )
-        deviceData.append( self.guid )
-
 
         return deviceData
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
     ''' Retrieve all files in backup directory '''
     def retrieveBackupFiles(self):
@@ -289,26 +163,12 @@ class BackupParser():
                 tryFile = plistlib.readPlist(self.backupDir + "/" + filename)
                 return tryFile
             except:
-                print "Error reading file: " + filename
+                # print "Error reading file: " + filename
                 pass
 
     def mobilemeApp2(self, plistName, folder):
-
-<<<<<<< HEAD
-		try:
-			tryFile = biplist.readPlist(self.backupDir + "/" + filename)
-			return tryFile
-		except:
-			try:
-				tryFile = plistlib.readPlist(self.backupDir + "/" + filename)
-				return tryFile
-			except:
-				# print "Error reading file: " + filename
-				pass
-=======
         try:
             appData = dict()
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             pfileInfo = self.openPlists(plistName)
 
@@ -325,18 +185,12 @@ class BackupParser():
             self.allAppBasicData[folder] = [appName, folder, pre, appData["installDate"], appData["lastUsed"], appData["numOfTimesUsed"]]
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def mobileMeApp(self, plistName, folder):
-
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
         try:
             appData = dict()
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             # Open Plist file
             pfileInfo = self.openPlists(plistName)
@@ -361,21 +215,16 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def iStudiezApp(self, plistName, folder):
         
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             # Open Plist file
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if (pfileInfo.get("STLastSyncDateKey")):
                 unfomatted = pfileInfo.get("STLastSyncDateKey")
@@ -407,20 +256,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def fbMessengerApp(self, plistName, folder):
-
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
         try:
             appData = dict()
             
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("FBUserAgentSystemUserAgent"):
                 appData["FBbrowsers"] = pfileInfo.get("FBUserAgentSystemUserAgent")
@@ -447,18 +290,12 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def sunRiseApp(self, plistName, folder):
-
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
         try:
             appData = dict()
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             pfileInfo = self.openPlists(plistName)
 
@@ -519,18 +356,12 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def googleMapApp(self, plistName, folder):
-
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
         try:
             appData = dict()
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             pfileInfo = self.openPlists(plistName)
 
@@ -580,19 +411,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def mixologistApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("OpenUDID"):
                 
@@ -637,19 +463,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def APnewsApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("CSComScore-lastTransmission"):
                 unformatted = pfileInfo.get("CSComScore-lastTransmission")
@@ -700,19 +521,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def fitnessPalApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("logged_in_as_username"):
                 appData["Logged_in_username"] = pfileInfo.get("logged_in_as_username")
@@ -740,7 +556,8 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + plistName
+            pass
+            # print "Error reading: " + plistName
 
     def FBapp(self, plistName, folder):
         try:
@@ -748,15 +565,9 @@ class BackupParser():
             
             pfileInfo = self.openPlists(plistName)
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + plistName
-=======
             if pfileInfo.get("FBUserAgentSystemUserAgent"):
                 appData["FBbrowsers"] = pfileInfo.get("FBUserAgentSystemUserAgent")
                 self.facebookItems["Facebook Browsers"] = (appData["FBbrowsers"])
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             appData["installDate"] = "N/A"
 
@@ -786,19 +597,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def sudokuApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("com.mopub.carrierinfo"):
 
@@ -813,7 +619,6 @@ class BackupParser():
                         appData[item] = carrierInfo[item]
                     elif item == "mobileNetworkCode":
                         appData[item] = carrierInfo[item]
-
 
             if pfileInfo.get("mad_lastDate"):
                 unformatted = pfileInfo.get("mad_lastDate")
@@ -846,20 +651,15 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def MailApp(self, plistName, folder):
         try:
             appData = dict()
             mailList = list()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             # Email addresses connected to phone
             if pfileInfo.get("LastDataProviderSubsections"):
@@ -889,7 +689,8 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + plistName
+            pass
+            # print "Error reading: " + plistName
 
     def HopStopApp(self, plistName, folder):
         try:
@@ -897,15 +698,8 @@ class BackupParser():
             recentHistoryList = list()
             
             pfileInfo = self.openPlists(plistName)
-
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + plistName
-=======
             if pfileInfo.get("SavedTransitMapName"):
                 self.hopStopReturn["Saved Transit Map"] = pfileInfo.get("SavedTransitMapName")
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("com.hopstop.CityDataLastUpdated"):
                 appData["CityDataLastUpdated"] = pfileInfo.get("com.hopstop.CityDataLastUpdated")
@@ -961,19 +755,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def grubHubApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             ''' Figure out how to get key: CurrentUser_FirstLogin_iPhone-arianaanastos@gmail.com '''
 
@@ -1005,19 +794,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def irisApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("OpenUDID"):
 
@@ -1048,7 +832,8 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def instaApp(self, plistName, folder):
         try:
@@ -1057,13 +842,7 @@ class BackupParser():
             visitedHashList = list()
             flaggedList = list()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             # Get install date
             if pfileInfo.get("ds-app-install-date"):
@@ -1138,7 +917,8 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def snapChatApp(self, plistName, folder):
         try:
@@ -1146,13 +926,7 @@ class BackupParser():
             bestFriendList = list()
             blockedList = list()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("LastLoginUsername"):
                 appData["LastUsername"] = pfileInfo.get("LastLoginUsername")
@@ -1235,22 +1009,17 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def linkedInApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
             
             # OR - userInfo = pfileInfo.get("userObject") not sure which one, both have same data
             if pfileInfo.get("com.brick.userObject"):
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
                 userInfo = pfileInfo.get("com.brick.userObject")
 
@@ -1291,19 +1060,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def whatsApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("AcctType"):
                 self.whatsappReturn["Account Type"] = pfileInfo.get("AcctType")
@@ -1351,19 +1115,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def seamlessApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             emailList = list()
 
@@ -1409,19 +1168,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def appleMapApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("SearchString"):
                 appData["searchString"] = pfileInfo.get("SearchString")
@@ -1447,20 +1201,15 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + plistName
+            pass
+            # print "Error reading: " + plistName
 
     def safarApp(self, plistName, folder):
         try:
             appData = dict()
             allSearches = list()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + plistName
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("RecentWebSearches"):
                 searches = pfileInfo.get("RecentWebSearches")
@@ -1492,20 +1241,15 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def openTableApp(self, plistName, folder):
         try:
             appData = dict()
             recentRestaurants = list()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("Number of reservations"):
                 appData["Number of Reservations"] = pfileInfo.get("Number of reservations")
@@ -1561,18 +1305,12 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def bbcApp(self, plistName, folder):
-
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
         try:
             appData = dict()
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             pfileInfo = self.openPlists(plistName)
 
@@ -1599,19 +1337,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + plistName
+            pass
+            # print "Error reading: " + plistName
 
     def backgammonApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + plistName
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("OpenUDID"):
                 udid = pfileInfo.get("OpenUDID")
@@ -1649,19 +1382,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + plistName
+            pass
+            # print "Error reading: " + plistName
 
     def dictApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + plistName
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("UAApplicationMetricLastOpenDate"):
                 unformatted = pfileInfo.get("UAApplicationMetricLastOpenDate")
@@ -1696,19 +1424,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + plistName
+            pass
+            # print "Error reading: " + plistName
 
     def yelpApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + plistName
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("YPLastDateSearchedKey"):
                 unformatted = pfileInfo.get("YPLastDateSearchedKey")
@@ -1743,19 +1466,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + plistName
+            pass
+            # print "Error reading: " + plistName
 
     def tedApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + plistName
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("TEDLastLaunchedDate"):
                 unformatted = pfileInfo.get("TEDLastLaunchedDate")
@@ -1779,19 +1497,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def followersApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("OpenUDID"):
                 udid = pfileInfo.get("OpenUDID")
@@ -1825,19 +1538,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def cnnApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("dateOfAppExit"):
                 unformatted = pfileInfo.get("dateOfAppExit")
@@ -1868,19 +1576,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def yahooWeatherApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("NumTimesAppRun"):
                 appData["numOfTimesUsed"] = str( pfileInfo.get("NumTimesAppRun") )
@@ -1909,21 +1612,16 @@ class BackupParser():
             self.allAppBasicData[folder] = [appName, folder, pre, appData["installDate"], appData["lastUsed"], appData["numOfTimesUsed"]]
 
             return appData
+
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def recSearches(self, plistName):
         try:
             appData = list()
 
-<<<<<<< HEAD
-			return appData
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("RecentSearches"):
                 searches = pfileInfo.get("RecentSearches")
@@ -1934,22 +1632,17 @@ class BackupParser():
                 self.recentSearches["Safari Searches"] = searches
 
             return appData
+
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def gasBuddyApp(self, plistName, folder):
         try:
             appData = dict()
             searches = list()
 
-<<<<<<< HEAD
-			return appData
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("kGBPreviousSearches"):
                 prevSearches = pfileInfo.get("kGBPreviousSearches")
@@ -1985,19 +1678,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def numbersApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("TSALastDidEnterBackgroundTime"):
                 unformatted = pfileInfo.get("TSALastDidEnterBackgroundTime")
@@ -2018,19 +1706,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def undergroundWeatherApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("CSComScore-lastTransmission"):
                 appData["lastUsed"] = pfileInfo.get("CSComScore-lastTransmission")
@@ -2040,19 +1723,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def appleStoreApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("lastUserId"):
                 appData["username"] = pfileInfo.get("lastUserId")
@@ -2074,18 +1752,12 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def uefaApp(self, plistName, folder):
         try:
-
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             appData = dict()
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             pfileInfo = self.openPlists(plistName)
 
@@ -2093,37 +1765,24 @@ class BackupParser():
                 lifecylelog = pfileInfo.get("com.tealium.lifecyclelog")
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def myRadarApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("storedLocations"):
                 locations = pfileInfo.get("storedLocations")
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def bloombergApp(self, plistName, folder):
         try:
-
-<<<<<<< HEAD
-			if pfileInfo.get("storedLocations"):
-				locations = pfileInfo.get("storedLocations")
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             appData = dict()
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             pfileInfo = self.openPlists(plistName)
 
@@ -2150,25 +1809,20 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def hopperApp(self, plistName, folder):
         try:
             appData = dict()
             pfileInfo = self.openPlists(plistName)
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             if pfileInfo.get("ATEngagementInstallDateKey"):
                 unformatted = pfileInfo.get("ATEngagementInstallDateKey")
                 formatted = unformatted.strftime("%b %d, %Y %H:%M:%S")
                 appData["installDate"] = formatted
             else:
                 appData["installDate"] = "N/A"
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("ATAppConfigurationLastUpdatePreferenceKey"):
                 unformatted = pfileInfo.get("ATAppConfigurationLastUpdatePreferenceKey")
@@ -2189,19 +1843,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def amazonApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("com.crashlytics.insights.lastmaintenancedate"):
                 unformatted = pfileInfo.get("com.crashlytics.insights.lastmaintenancedate")
@@ -2235,19 +1884,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def mintApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("ABBTLastUpdateDate"):
                 unformatted = pfileInfo.get("ABBTLastUpdateDate")
@@ -2274,19 +1918,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def uberApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("last_user_gps_location_longitude"):
                 self.uberReturn["Last User Longitude Location"] = pfileInfo.get("last_user_gps_location_longitude")
@@ -2316,19 +1955,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def dunkinApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("LastDeviceLanguage"):
                 self.dunkinReturn["Language"] = pfileInfo.get("LastDeviceLanguage")
@@ -2366,19 +2000,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def groupMeApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("user"):
                 user = pfileInfo.get("user")
@@ -2429,19 +2058,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def hangApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("RootAssociatedStoreKey"):
                 stored = pfileInfo.get("RootAssociatedStoreKey")
@@ -2463,19 +2087,14 @@ class BackupParser():
             return appData
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def jetblueApp(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("RequisitesLastRequest"):
                 appData["lastUsed"] = pfileInfo.get("RequisitesLastRequest")
@@ -2497,19 +2116,14 @@ class BackupParser():
             self.allAppBasicData[folder] = [appName, folder, pre, appData["installDate"], appData["lastUsed"], appData["numOfTimesUsed"]]
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
     def getArbInstalled(self, plistName, folder):
         try:
             appData = dict()
 
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
             pfileInfo = self.openPlists(plistName)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if pfileInfo.get("OpenUDID"):
 
@@ -2534,19 +2148,13 @@ class BackupParser():
             self.allAppBasicData[folder] = [appName, folder, pre, appData["installDate"], appData["lastUsed"], appData["numOfTimesUsed"]]
 
         except:
-            print "Error reading: " + folder
+            pass
+            # print "Error reading: " + folder
 
-
-<<<<<<< HEAD
-		except:
-			pass
-			# print "Error reading: " + folder
-=======
     def info_plist_parser(self):
         if os.path.exists(self.backupDir):
         
             dirList = os.listdir(self.backupDir)
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
             if "Info.plist" in dirList:
                 allApps = self.getInfoPlist()
