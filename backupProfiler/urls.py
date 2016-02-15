@@ -29,6 +29,7 @@ urlpatterns = patterns('',
     url(r'^wifi/', viewer.wifiPage, name='wifi'),
     url(r'^keychain/', viewer.keychainPage, name='keychain'),
     url(r'^notesdata/', viewer.notesPage, name='notesdata'),
+    url(r'^dbs/', viewer.dbsPage, name='dbs'),
 ) # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
