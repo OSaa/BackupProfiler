@@ -284,7 +284,6 @@ class Data_Extraction():
         return self.imageAddresses
 
     def extract_CalendarInfo(self):
-
         self.calendarList = list()
         self.calendarJSON = list()
 
@@ -493,9 +492,8 @@ class Data_Extraction():
                     if os.stat( temp ).st_size != 0:
                         with open(os.path.join(SMSdirectory, filename), "rU") as csvfile:
                             reader = csv.reader(csvfile, delimiter='\t', quotechar="|")
-
                             for row in reader:
-                                if row and row[0] != " ":
+                                if row and row[0].strip() != "":
                                     sent_rec = row[0]
                                     date = row[1]
                                     phoneNum = row[2]
