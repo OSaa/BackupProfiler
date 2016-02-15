@@ -332,7 +332,8 @@ def getNotes(msgDB, destPath):
             else:
                 author = str(row[3])
 
-            title = str(row[4])
+            # title = str(row[4])
+            title = removeNonAscii( row[4] ).replace('\n', ' ').replace('\t', ' ').encode('utf-8')
 
             try:
                 for item in zbody_cursor.execute('SELECT zcontent FROM znotebody WHERE z_pk=?;', (zbody_id, ) ):
