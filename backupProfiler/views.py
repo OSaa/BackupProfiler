@@ -189,7 +189,6 @@ class ViewsHandler():
             
         return render_to_response("index.html", {"keychainData":self.keychainData, "wifiData":self.wifiData, "current_Backup":self.currentBackup, "backup_creation":backup_creation, "all_backups":self.all_backups, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec } )
 
-<<<<<<< HEAD
 	def __init__(self):
 		self.extractedBackups()
 		
@@ -354,7 +353,7 @@ class ViewsHandler():
 				
 				else:
 					self.update( extract_location )
-=======
+
     @csrf_exempt
     def createBackup(self, request):
         if request.method == "POST":
@@ -366,7 +365,6 @@ class ViewsHandler():
                     print backup_location
                 else:
                     self.update( backup_location )
->>>>>>> 1718d91b085db1c5d393bad6079ca6fea3a6cdea
 
     @csrf_exempt
     def overviewPage(self, request):
@@ -493,11 +491,11 @@ class ViewsHandler():
 
         return render_to_response("NotesTemplate.html", {"notestitles": notesTitles, "keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec } )
 
-	def dbsPage(self, request):
+    def dbsPage(self, request):
 
-		dbsData = self.extractor.returnDBdata()
+        dbsData = self.extractor.returnDBdata()
 
-		return render_to_response("DBsTemplate.html", {"dbsData": dbsData, "keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec } )
+        return render_to_response("DBsTemplate.html", {"dbsData": dbsData, "keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec } )
 
 
 

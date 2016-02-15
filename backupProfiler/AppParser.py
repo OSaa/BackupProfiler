@@ -12,136 +12,133 @@ import collections
 
 class BackupParser():
     
-	def __init__(self, backup):
-		print "Running AppParser.py"
-		self.backupDir = backup
+    def __init__(self, backup):
+        print "Running AppParser.py"
+        self.backupDir = backup
 
-		# App Name -- App Folder Name -- Status -- Installed -- Last Used -- Number of times used(Maybe)
-		self.allAppBasicData = dict()
-		self.deletedAppList = list()
-		self.recentSearches = dict()
-		self.usernames = list()
-		self.AppFolderNames = dict()
-		self.safariRecentSearches = list()
-		self.facebookItems = dict()
+        # App Name -- App Folder Name -- Status -- Installed -- Last Used -- Number of times used(Maybe)
+        self.allAppBasicData = dict()
+        self.deletedAppList = list()
+        self.recentSearches = dict()
+        self.usernames = list()
+        self.AppFolderNames = dict()
+        self.safariRecentSearches = list()
+        self.facebookItems = dict()
 
-		# Initializers
-		self.gasBudZips = list()
-		self.groupmeReturn = dict()
-		self.dunkinReturn = dict()
-		self.uberReturn = dict()
-		self.openTableReturn = dict()
-		self.openTableRecReturn = list()
-		self.appleMapReturn = dict()
-		self.whatsappReturn = dict()
-		self.linkedInReturn = dict()
-		self.snapchatReturn = dict()
-		self.snapchatFriends = list()
-		self.instaReturnDict = dict()
-		self.hopStopReturn = dict()
-		self.hopStopRec = list()
-		self.appleMailReturn = dict()
-		self.gMapDict = dict()
-		self.sunriseData = dict()
-		self.snapChatRecent = list()
-
-
-		self.openAppCSV()
-		self.getInfoPlist()
-		self.info_plist_parser()
+        # Initializers
+        self.gasBudZips = list()
+        self.groupmeReturn = dict()
+        self.dunkinReturn = dict()
+        self.uberReturn = dict()
+        self.openTableReturn = dict()
+        self.openTableRecReturn = list()
+        self.appleMapReturn = dict()
+        self.whatsappReturn = dict()
+        self.linkedInReturn = dict()
+        self.snapchatReturn = dict()
+        self.snapchatFriends = list()
+        self.instaReturnDict = dict()
+        self.hopStopReturn = dict()
+        self.hopStopRec = list()
+        self.appleMailReturn = dict()
+        self.gMapDict = dict()
+        self.sunriseData = dict()
+        self.snapChatRecent = list()
 
 
-	''' Make SHA1 Hash File into a plist File'''
-	def renameFile(self, filename):
-		fullPath = self.backupDir + "/" + filename
-		newname = os.rename(fullPath, fullPath + ".plist")
-		newname = fullPath + ".plist"
+        self.openAppCSV()
+        self.getInfoPlist()
+        self.info_plist_parser()
 
-	def openAppCSV(self):
-		fullpath = os.path.dirname(os.path.abspath(__file__))
 
-		for filename in os.listdir(fullpath):
-			if filename == "apps.csv":
-				with open(os.path.join(fullpath, filename), "Ub") as csvfile:
-					reader = csv.reader(csvfile, delimiter=',', quotechar="|")
+    ''' Make SHA1 Hash File into a plist File'''
+    def renameFile(self, filename):
+        fullPath = self.backupDir + "/" + filename
+        newname = os.rename(fullPath, fullPath + ".plist")
+        newname = fullPath + ".plist"
 
-					for row in reader:
-						
-						# row[0] app name
-						# row[1] app folder
-						appFolder = row[1]
-						appName = row[0]
-						preinstalled = row[2]
-						# row[2] if preinstalled
+    def openAppCSV(self):
+        fullpath = os.path.dirname(os.path.abspath(__file__))
 
-						if not self.AppFolderNames.has_key(row[1]):
-							self.AppFolderNames[appFolder] = [appName, preinstalled]
+        for filename in os.listdir(fullpath):
+            if filename == "apps.csv":
+                with open(os.path.join(fullpath, filename), "Ub") as csvfile:
+                    reader = csv.reader(csvfile, delimiter=',', quotechar="|")
 
-	def get_folder_name(self, folder):
-		if self.AppFolderNames.has_key(folder):
-			return self.AppFolderNames[folder] # returns list: [appName, preinstalled]
-		else:
-			return ["N/A","N/A"]
+                    for row in reader:	
+                        # row[0] app name
+                        # row[1] app folder
+                        appFolder = row[1]
+                        appName = row[0]
+                        preinstalled = row[2]
+                        # row[2] if preinstalled
 
-	
-	def getInfoPlist(self):
-		infoPlist = self.backupDir + "/Info.plist"
+                        if not self.AppFolderNames.has_key(row[1]):
+                            self.AppFolderNames[appFolder] = [appName, preinstalled]
+
+    def get_folder_name(self, folder):
+        if self.AppFolderNames.has_key(folder):
+            return self.AppFolderNames[folder] # returns list: [appName, preinstalled]
+        else:
+            return ["N/A","N/A"]
+
+    def getInfoPlist(self):
+        infoPlist = self.backupDir + "/Info.plist"
 			
-		encryptedDict = dict()
+        encryptedDict = dict()
 
-		try:
-			info = biplist.readPlist(infoPlist)
-		except:
-			try:
-				info = plistlib.readPlist(infoPlist)
-			except:
-				print "Error reading Info.plist"
-
-
-		self.DeviceName = info.get("Device Name")
-		self.LastBackupDate = info.get("Last Backup Date")
-		self.ownerNumber = info.get("Phone Number")
-		self.phoneType = info.get("Product Name")
-		self.iOS = info.get("Product Version")
-		self.serialNumber = info.get("Serial Number")
-		self.uid = info.get("Unique Identifier")
-		self.guid = info.get("GUID")
-		
-		InstalledApps = info.get("Installed Applications")
-
-		for app in InstalledApps:
-			data = ("AppDomain-" + app + "-Library/Preferences/" + app + ".plist")
-			data = hashlib.sha1(data).hexdigest()
-			if (not encryptedDict.has_key(data)):
-				encryptedDict[data] = app
-		
-		LibraryApps = info.get('iTunes Settings')
-
-		for item in LibraryApps:
-			if item == "DeletedApplications":
-					deletedApps = LibraryApps["DeletedApplications"]
-					for dapp in deletedApps:
-						self.deletedAppList.append(dapp)
+        try:
+            info = biplist.readPlist(infoPlist)
+        except:
+            try:
+                info = plistlib.readPlist(infoPlist)
+            except:
+                print "Error reading Info.plist"
 
 
-		return encryptedDict
+        self.DeviceName = info.get("Device Name")
+        self.LastBackupDate = info.get("Last Backup Date")
+        self.ownerNumber = info.get("Phone Number")
+        self.phoneType = info.get("Product Name")
+        self.iOS = info.get("Product Version")
+        self.serialNumber = info.get("Serial Number")
+        self.uid = info.get("Unique Identifier")
+        self.guid = info.get("GUID")
 
-	def deviceInfo(self):
-		deviceData = list()
+        InstalledApps = info.get("Installed Applications")
 
-		deviceData.append( self.DeviceName )
-		deviceData.append( self.LastBackupDate )
-		deviceData.append( self.ownerNumber )
-		deviceData.append( self.phoneType )
-		deviceData.append( self.iOS )
-		deviceData.append( self.serialNumber )
-		deviceData.append( self.uid )
-		deviceData.append( self.guid )
+        for app in InstalledApps:
+            data = ("AppDomain-" + app + "-Library/Preferences/" + app + ".plist")
+            data = hashlib.sha1(data).hexdigest()
+            if (not encryptedDict.has_key(data)):
+                encryptedDict[data] = app
+
+
+        LibraryApps = info.get('iTunes Settings')
+
+        for item in LibraryApps:
+            if item == "DeletedApplications":
+                deletedApps = LibraryApps["DeletedApplications"]
+                self.deletedAppList.append(dapp)
+
+        return encryptedDict
+
+    def deviceInfo(self):
+        deviceData = list()
+
+        deviceData.append( self.DeviceName )
+        deviceData.append( self.LastBackupDate )
+        deviceData.append( self.ownerNumber )
+        deviceData.append( self.phoneType )
+        deviceData.append( self.iOS )
+        deviceData.append( self.serialNumber )
+        deviceData.append( self.uid )
+        deviceData.append( self.guid )
 
         return deviceData
 
-    ''' Retrieve all files in backup directory '''
     def retrieveBackupFiles(self):
+        ''' Retrieve all files in backup directory '''
         # All Files in Backup Folder
         fileList = list()
         for root, dirs, files in os.walk(self.backupDir):
