@@ -411,6 +411,7 @@ def getAppFiles(infoplist, backupDir, AppFiles):
         
     
     encryptedDict = dict()
+
     try:
         info = plistlib.readPlist(infoplist)
     except:
@@ -430,13 +431,13 @@ def getAppFiles(infoplist, backupDir, AppFiles):
     for plistName in fileList:
         if encryptedDict.has_key(plistName):
             if not os.path.exists( AppFiles + plistName + ".plist"):
-                fullPath = backupDir + "/" + plistName
+                fullPath = os.path.join(backupDir, plistName)
                 shutil.copy(fullPath, AppFiles)
                 appFolder = AppFiles + plistName
                 newname = os.rename(appFolder, appFolder + ".plist")
         
         elif encryptedDict.has_key(plistName[:-6]):
-            fullPath = backupDir + "/" + plistName
+            fullPath = os.path.join(backupDir, plistName)
             shutil.copy(fullPath, AppFiles)
 
     # 37d957bda6d8be85555e7c0a7d30c5a8bc1b5cce - Recent Searches
@@ -452,11 +453,156 @@ def getAppFiles(infoplist, backupDir, AppFiles):
     for plist in dataPlists:
         if plist in fileList:
             if not os.path.exists( AppFiles + plist + ".plist"):
-                fullPath = backupDir + "/" +  plist
+                fullPath = os.path.join(backupDir, plist)
                 shutil.copy(fullPath, AppFiles)
 
-                appFolder = AppFiles + "/" + plist
+                appFolder = os.path.join(AppFiles, plist)
                 newname = os.rename(appFolder, appFolder + ".plist")
+
+def getint(data, offset, intsize):
+    """Retrieve an integer (big-endian) and new offset from the current offset"""
+    value = 0
+    while intsize > 0:
+        value = (value<<8) + ord(data[offset])
+        offset = offset + 1
+        intsize = intsize - 1
+    return value, offset
+
+def getstring(data, offset):
+    """Retrieve a string and new offset from the current offset into the data"""
+    if data[offset] == chr(0xFF) and data[offset+1] == chr(0xFF):
+        return '', offset+2 # Blank string
+    length, offset = getint(data, offset, 2) # 2-byte length
+    value = data[offset:offset+length]
+    return value, (offset + length)
+
+def process_mbdb_file(filename, mbdx):
+    mbdb = {} # Map offset of info in this file => file info
+    data = open(filename).read()
+    if data[0:4] != "mbdb": raise Exception("This does not look like an MBDB file")
+    offset = 4
+    offset = offset + 2 # value x05 x00, not sure what this is
+    while offset < len(data):
+        fileinfo = {}
+        fileinfo['start_offset'] = offset
+        fileinfo['domain'], offset = getstring(data, offset)
+        fileinfo['filename'], offset = getstring(data, offset)
+        fileinfo['linktarget'], offset = getstring(data, offset)
+        fileinfo['datahash'], offset = getstring(data, offset)
+        fileinfo['unknown1'], offset = getstring(data, offset)
+        fileinfo['mode'], offset = getint(data, offset, 2)
+        fileinfo['unknown2'], offset = getint(data, offset, 4)
+        fileinfo['unknown3'], offset = getint(data, offset, 4)
+        fileinfo['userid'], offset = getint(data, offset, 4)
+        fileinfo['groupid'], offset = getint(data, offset, 4)
+        fileinfo['mtime'], offset = getint(data, offset, 4)
+        fileinfo['atime'], offset = getint(data, offset, 4)
+        fileinfo['ctime'], offset = getint(data, offset, 4)
+        fileinfo['filelen'], offset = getint(data, offset, 8)
+        fileinfo['flag'], offset = getint(data, offset, 1)
+        fileinfo['numprops'], offset = getint(data, offset, 1)
+        fileinfo['properties'] = {}
+        for ii in range(fileinfo['numprops']):
+            propname, offset = getstring(data, offset)
+            propval, offset = getstring(data, offset)
+            fileinfo['properties'][propname] = propval
+        mbdb[fileinfo['start_offset']] = fileinfo
+        fullpath = fileinfo['domain'] + '-' + fileinfo['filename']
+        id = hashlib.sha1(fullpath)
+        mbdx[fileinfo['start_offset']] = id.hexdigest()
+    return mbdb
+
+def modestr(val):
+    def mode(val):
+        if (val & 0x4): r = 'r'
+        else: r = '-'
+        if (val & 0x2): w = 'w'
+        else: w = '-'
+        if (val & 0x1): x = 'x'
+        else: x = '-'
+        return r+w+x
+    return mode(val>>6) + mode((val>>3)) + mode(val)
+
+def fileinfo_str(f, verbose=False):
+    if not verbose: return "(%s)%s::%s" % (f['fileID'], f['domain'], f['filename'])
+    if (f['mode'] & 0xE000) == 0xA000: type = 'l' # symlink
+    elif (f['mode'] & 0xE000) == 0x8000: type = '-' # file
+    elif (f['mode'] & 0xE000) == 0x4000: type = 'd' # dir
+    else: 
+        print >> sys.stderr, "Unknown file type %04x for %s" % (f['mode'], fileinfo_str(f, False))
+        type = '?' # unknown
+    info = ("%s%s %08x %08x %7d %10d %10d %10d (%s)%s::%s" % 
+            (type, modestr(f['mode']&0x0FFF) , f['userid'], f['groupid'], f['filelen'], 
+             f['mtime'], f['atime'], f['ctime'], f['fileID'], f['domain'], f['filename']))
+    if type == 'l': info = info + ' -> ' + f['linktarget'] # symlink destination
+    for name, value in f['properties'].items(): # extra properties
+        info = info + ' ' + name + '=' + repr(value)
+    return info
+
+def parse_output(backup_dir, dbsDIR):
+    with open(dbsDIR + "/manifest_output.txt", "r") as f:
+
+        # DBs that have already been extracted (i.e. SMS.db)
+        knownSHAs = ['3d0d7e5fb2ce288813306e4d4636395e047a3d28', '31bb7ba8914766d4ba40d6dfb6113c8b614be442', '2041457d5fe04d39d0ab481178355df6781e6858', '2b2b0084a1bc3a5ac8c27afdf14afb42c61a19ca', 'ca3bc056d4da0bbf88b5fb3be254f3b7147e639c' ]
+
+        for line in f:
+
+            if line[-4:] == "sql\n" or line[-9:] == "sqlitedb\n" or line[-7:] == "sqlite\n" or line[-3:] == "db\n":
+
+                # Avoid google analytics DBs, no interesting info there
+                if line[-23:] != "googleanalytics-v3.sql\n" and line[-23:] != "googleanalytics-v2.sql\n" and line[-20:] != "googleanalytics.sql\n" and (line[-23:][:15] != "googleanalytics") :
+                    openparen = line.index("(") + 1
+                    closeparen = line.index(")")
+
+                    dbSHA = line[openparen:closeparen]      # Getting hash on each line
+
+                    if dbSHA not in knownSHAs:
+                        fullPath = os.path.join(backup_dir, dbSHA)
+
+                        afterparen = closeparen+1
+                        filelocation = line[afterparen:]
+                        templist = filelocation.split("/")
+
+                        temp = templist[len(templist)-1][:-1]
+
+                        app = str(filelocation.split("::")[0])
+
+                        # Using '~' to make it easy to split later on
+                        dbname = app + "~" + templist[len(templist)-1][:-1]
+                        
+                        if len( temp.split(".") ) > 1:
+                            newPath = os.path.join(dbsDIR, dbname)
+
+                            if not os.path.exists( newPath ):
+                                shutil.copy(fullPath, dbsDIR)
+
+                                oldDBfile = os.path.join(dbsDIR, dbSHA)
+                                newDBfile = os.path.join(dbsDIR, dbname)
+
+                                # Rename file in DBs
+                                os.rename(oldDBfile, newDBfile)
+
+
+def extract_mandata(backup_dir, extracted_dir):
+    mbdx = {}
+    verbose = True
+
+    f = open(extracted_dir + "/manifest_output.txt", "w+")
+    mbdb = process_mbdb_file(backup_dir + "/Manifest.mbdb", mbdx)
+
+    for offset, fileinfo in mbdb.items():
+        if offset in mbdx:
+            fileinfo['fileID'] = mbdx[offset]
+        else:
+            fileinfo['fileID'] = "<nofileID>"
+            f.write( "No fileID found for %s" % fileinfo_str(fileinfo) + "\n" )
+
+        f.write( fileinfo_str(fileinfo, verbose) + "\n" )
+
+    f.close()
+    # print "manifest_output.txt created"
+    parse_output(backup_dir, extracted_dir)
+
 
 def main(newBackup):
 
@@ -547,6 +693,13 @@ def main(newBackup):
 		        print "Getting Images"
 		        getImages(pathName, Jpgoutputdir, Pngoutputdir)
 		        print "Done Getting Images"
+
+                if "Manifest.mbdb" in dirList:
+                    dbsOutputDir = os.path.join(dest, "DBs")
+                    os.makedirs(dbsOutputDir)
+                    print "Getting Databases"
+                    extract_mandata(pathName, dbsOutputDir)
+                    print "Done Getting Databases"
 
                 return dest
         else:
