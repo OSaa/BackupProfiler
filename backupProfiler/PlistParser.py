@@ -21,7 +21,7 @@ import strftime_1900
 class PlistParser():
 	def __init__(self, backup):
 		print "Running PlistParser.py"
-		
+
 		self.all_plist_data = list()
 		self.encryptedDict = dict()
 
@@ -321,5 +321,4 @@ class PlistParser():
 				encypted_file = hashlib.sha1(data).hexdigest()
 				if (not self.encryptedDict.has_key(encypted_file)):
 					self.encryptedDict[encypted_file] = app
-					print encypted_file, app
 

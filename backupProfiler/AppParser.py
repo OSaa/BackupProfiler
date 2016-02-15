@@ -83,7 +83,6 @@ class BackupParser():
             return ["N/A","N/A"]
 
     def getInfoPlist(self):
-        print "AppParser getInfoPlist Info plist"
         infoPlist = self.backupDir + "/Info.plist"
 			
         encryptedDict = dict()
@@ -94,7 +93,7 @@ class BackupParser():
             try:
                 info = plistlib.readPlist(infoPlist)
             except:
-                print "Error reading Info.plist"
+                print "AppParser.py: Error reading Info.plist"
 
 
         self.DeviceName = info.get("Device Name")
