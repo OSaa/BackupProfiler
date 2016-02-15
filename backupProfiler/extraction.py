@@ -117,43 +117,43 @@ class Data_Extraction():
 
         notesdirectory = os.path.join(self.directoryExtracted, "Notes")
 
-        for filename in os.listdir(notesdirectory):
-            if filename == "notes.tsv":
-                with open(os.path.join(notesdirectory, filename), "rb") as csvfile:
-                    reader = csv.reader(csvfile, delimiter='\t', quotechar="|")
+        if os.path.exists(notesdirectory):
+            for filename in os.listdir(notesdirectory):
+                if filename == "notes.tsv":
+                    with open(os.path.join(notesdirectory, filename), "rb") as csvfile:
+                        reader = csv.reader(csvfile, delimiter='\t', quotechar="|")
 
-                    for row in reader:
-                        if len(row) > 0:
-                            title = row[0]
-                            author = row[1]
-                            c_date = row[2]
+                        for row in reader:
+                            if len(row) > 0:
+                                title = row[0]
+                                author = row[1]
+                                c_date = row[2]
 
-                            obj = datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S")
+                                obj = datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S")
 
-                            try:
-                                formatted = obj.strftime("%b %d, %Y %H:%M:%S")
-                                creation_date = formatted
-                            except:
-                                formatted = strftime_1900.strftime_1900(obj, "%b %d, %Y %H:%M:%S")
-                                creation_date = formatted
+                                try:
+                                    formatted = obj.strftime("%b %d, %Y %H:%M:%S")
+                                    creation_date = formatted
+                                except:
+                                    formatted = strftime_1900.strftime_1900(obj, "%b %d, %Y %H:%M:%S")
+                                    creation_date = formatted
 
-                            m_date = row[3]
+                                m_date = row[3]
 
-                            obj = datetime.strptime(m_date, "%Y-%m-%d %H:%M:%S")
+                                obj = datetime.strptime(m_date, "%Y-%m-%d %H:%M:%S")
 
-                            try:
-                                formatted = obj.strftime("%b %d, %Y %H:%M:%S")
-                                modification_date = formatted
-                            except:
-                                formatted = strftime_1900.strftime_1900(obj, "%b %d, %Y %H:%M:%S")
-                                modification_date = formatted
+                                try:
+                                    formatted = obj.strftime("%b %d, %Y %H:%M:%S")
+                                    modification_date = formatted
+                                except:
+                                    formatted = strftime_1900.strftime_1900(obj, "%b %d, %Y %H:%M:%S")
+                                    modification_date = formatted
 
-                            note_body = row[4]
+                                note_body = row[4]
 
-                            self.notesTitles[title] = [creation_date, modification_date, note_body]
+                                self.notesTitles[title] = [creation_date, modification_date, note_body]
 
     def returnNotesTitles(self):
-
         return self.notesTitles
 
     def extract_ImageData(self):
@@ -290,103 +290,101 @@ class Data_Extraction():
 
         Calendardirectory = os.path.join(self.directoryExtracted, "Calendar")
 
-        for filename in os.listdir(Calendardirectory):
-            if filename == "calendar.tsv":
-                with open(os.path.join(Calendardirectory, filename), "rb") as csvfile:
-                    reader = csv.reader(csvfile, delimiter='\t', quotechar="|")
+        if os.path.exists(Calendardirectory):
+            for filename in os.listdir(Calendardirectory):
+                if filename == "calendar.tsv":
+                    with open(os.path.join(Calendardirectory, filename), "rb") as csvfile:
+                        reader = csv.reader(csvfile, delimiter='\t', quotechar="|")
 
-                    for row in reader:
-                        if row and row[0] != " ":
-                            try:
-                                if row[0]:
-                                    event = row[0]
-                                else:
-                                    event = "N/A"
-                            
-                                if row[1] and row[1] != "None":
-                                    unformatted = row[1]
-                                    obj = datetime.strptime(unformatted, "%Y-%m-%d %H:%M:%S")
-                                    try:
-                                        startDateList = obj.strftime("%b %d, %Y %H:%M:%S")
-                                        startDateJSON = obj.strftime("%Y-%m-%dT%H:%M:%S")
-                                    except:
-                                        startDateList = strftime_1900.strftime_1900(obj, "%b %d, %Y %H:%M:%S")
-                                        startDateJSON = obj.isoformat()
-                                else:
-                                    startDateList = "N/A"
-                                    startDateJSON = "N/A"
-
-                                if row[2] and row[2] != "None":
-                                    unformatted2 = row[2]
-                                    obj2 = datetime.strptime(unformatted2, "%Y-%m-%d %H:%M:%S")
-                                    try:
-                                        endDateList = obj2.strftime("%b %d, %Y %H:%M:%S")
-                                        endDateJSON = obj2.strftime("%Y-%m-%dT%H:%M:%S")
-                                    except:
-                                        endDateList = strftime_1900.strftime_1900(obj2, "%b %d, %Y %H:%M:%S")
-                                        endDateJSON = obj2.isoformat()
-                                else:
-                                    endDateList = "N/A"
-                                    endDateJSON = "N/A"
+                        for row in reader:
+                            if row and row[0] != " ":
+                                try:
+                                    if row[0]:
+                                        event = row[0]
+                                    else:
+                                        event = "N/A"
                                 
-                                if len(row) > 3:
-                                    if row[3] == 'None':
+                                    if row[1] and row[1] != "None":
+                                        unformatted = row[1]
+                                        obj = datetime.strptime(unformatted, "%Y-%m-%d %H:%M:%S")
+                                        try:
+                                            startDateList = obj.strftime("%b %d, %Y %H:%M:%S")
+                                            startDateJSON = obj.strftime("%Y-%m-%dT%H:%M:%S")
+                                        except:
+                                            startDateList = strftime_1900.strftime_1900(obj, "%b %d, %Y %H:%M:%S")
+                                            startDateJSON = obj.isoformat()
+                                    else:
+                                        startDateList = "N/A"
+                                        startDateJSON = "N/A"
+
+                                    if row[2] and row[2] != "None":
+                                        unformatted2 = row[2]
+                                        obj2 = datetime.strptime(unformatted2, "%Y-%m-%d %H:%M:%S")
+                                        try:
+                                            endDateList = obj2.strftime("%b %d, %Y %H:%M:%S")
+                                            endDateJSON = obj2.strftime("%Y-%m-%dT%H:%M:%S")
+                                        except:
+                                            endDateList = strftime_1900.strftime_1900(obj2, "%b %d, %Y %H:%M:%S")
+                                            endDateJSON = obj2.isoformat()
+                                    else:
+                                        endDateList = "N/A"
+                                        endDateJSON = "N/A"
+                                    
+                                    if len(row) > 3:
+                                        if row[3] == 'None':
+                                            location = "N/A"
+                                        else:
+                                            location = row[3]
+                                    else:
                                         location = "N/A"
-                                    else:
-                                        location = row[3]
-                                else:
-                                    location = "N/A"
 
-                                if len(row) > 4:
-                                    if row[4] == 'None':
+                                    if len(row) > 4:
+                                        if row[4] == 'None':
+                                            description = "N/A"
+                                        else:
+                                            description = row[4]
+                                    else:
                                         description = "N/A"
+                                    
+                                    if len(row) > 5:
+                                        if row[5] == 'None':
+                                            start_timezone = "N/A"
+                                        else:
+                                            start_timezone = row[5]
                                     else:
-                                        description = row[4]
-                                else:
-                                    description = "N/A"
-                                
-                                if len(row) > 5:
-                                    if row[5] == 'None':
                                         start_timezone = "N/A"
-                                    else:
-                                        start_timezone = row[5]
-                                else:
-                                    start_timezone = "N/A"
 
-                                if len(row) > 6:
-                                    if row[6] == 'None':
+                                    if len(row) > 6:
+                                        if row[6] == 'None':
+                                            end_timezone = "N/A"
+                                        else:
+                                            end_timezone = row[6]
+                                    else:
                                         end_timezone = "N/A"
-                                    else:
-                                        end_timezone = row[6]
-                                else:
-                                    end_timezone = "N/A"
 
-                                if len(row) > 7:
-                                    if row[7] == 'None':
+                                    if len(row) > 7:
+                                        if row[7] == 'None':
+                                            calendar_type = "N/A"
+                                        else:
+                                            calendar_type = row[7]
+                                    else:
                                         calendar_type = "N/A"
-                                    else:
-                                        calendar_type = row[7]
-                                else:
-                                    calendar_type = "N/A"
 
-                                if len(row) > 8:
-                                    if row[8] == 'None':
+                                    if len(row) > 8:
+                                        if row[8] == 'None':
+                                            ownerEmail = "N/A"
+                                        else:
+                                            ownerEmail = row[8]
+                                    else:
                                         ownerEmail = "N/A"
-                                    else:
-                                        ownerEmail = row[8]
-                                else:
-                                    ownerEmail = "N/A"
 
-                                self.calendarList.append( [event, startDateList, endDateList, location, description, start_timezone, end_timezone, calendar_type, ownerEmail] )
-                                self.calendarJSON.append( {'title': event, 'start': startDateJSON, 'end': endDateJSON, 'location': location, 'description': description, "start_timezone":start_timezone, "end_timezone":end_timezone, "calendar_type":calendar_type, "ownerEmail":ownerEmail})
+                                    self.calendarList.append( [event, startDateList, endDateList, location, description, start_timezone, end_timezone, calendar_type, ownerEmail] )
+                                    self.calendarJSON.append( {'title': event, 'start': startDateJSON, 'end': endDateJSON, 'location': location, 'description': description, "start_timezone":start_timezone, "end_timezone":end_timezone, "calendar_type":calendar_type, "ownerEmail":ownerEmail})
 
-                            except:
-                                print " ****** extraction.py ****** "
-                                print "Calendar Data Extraction Error"
-                                print row
-
-                            
-
+                                except:
+                                    print " ****** extraction.py ****** "
+                                    print "Calendar Data Extraction Error"
+                                    print row
 
         return [self.calendarList, self.calendarJSON]
 
@@ -422,44 +420,45 @@ class Data_Extraction():
 
         Callsdirectory = os.path.join(self.directoryExtracted, "Calls")
 
-        for filename in os.listdir(Callsdirectory):
-            if filename == "calls.tsv":
-                with open(os.path.join(Callsdirectory, filename), "rb") as csvfile:
-                    reader = csv.reader(csvfile, delimiter='\t', quotechar="|")
+        if os.path.exists(Callsdirectory):
+            for filename in os.listdir(Callsdirectory):
+                if filename == "calls.tsv":
+                    with open(os.path.join(Callsdirectory, filename), "rb") as csvfile:
+                        reader = csv.reader(csvfile, delimiter='\t', quotechar="|")
 
-                    for row in reader:
-                        if row and row[0] != " ":
-                            num = row[0]
+                        for row in reader:
+                            if row and row[0] != " ":
+                                num = row[0]
 
-                            date = row[1]
-                            obj = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
-                            try:
-                                formatted = obj.strftime("%b %d, %Y %H:%M:%S")
-                            except:
-                                formatted = strftime_1900.strftime_1900(obj, "%b %d, %Y %H:%M:%S")
+                                date = row[1]
+                                obj = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+                                try:
+                                    formatted = obj.strftime("%b %d, %Y %H:%M:%S")
+                                except:
+                                    formatted = strftime_1900.strftime_1900(obj, "%b %d, %Y %H:%M:%S")
 
-                            calltype = row[2]
-                            duration = row[3]
+                                calltype = row[2]
+                                duration = row[3]
 
-                            if self.contactsDict.has_key(num):
-                                name = self.contactsDict[num]
-                            else:
-                                name = "N/A"
-
-                            self.allCalls.append( [name, num, formatted, calltype, duration] )
-
-                            if self.contactsDict.has_key(num):
-                                name = self.contactsDict[num]
-
-                                if callDict.has_key(name):
-                                    callDict[name] += 1
+                                if self.contactsDict.has_key(num):
+                                    name = self.contactsDict[num]
                                 else:
-                                    callDict[name] = 1
-                            else:
-                                if callDict.has_key(num):
-                                    callDict[num] += 1
+                                    name = "N/A"
+
+                                self.allCalls.append( [name, num, formatted, calltype, duration] )
+
+                                if self.contactsDict.has_key(num):
+                                    name = self.contactsDict[num]
+
+                                    if callDict.has_key(name):
+                                        callDict[name] += 1
+                                    else:
+                                        callDict[name] = 1
                                 else:
-                                    callDict[num] = 1
+                                    if callDict.has_key(num):
+                                        callDict[num] += 1
+                                    else:
+                                        callDict[num] = 1
         
         self.numPeopleCalled = len(callDict)
 
