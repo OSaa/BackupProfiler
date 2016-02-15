@@ -9,12 +9,14 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 import random
 import geocoder
+import sqlite3
 
 # Because of CSV Error generated: _csv.Error: field larger than field limit (131072)
 csv.field_size_limit(sys.maxsize)
 
 class Data_Extraction():
     def __init__(self, mainDirs):
+        print "Running extraction.py"
 
         self.directoryExtracted = mainDirs
 
@@ -31,6 +33,83 @@ class Data_Extraction():
         self.imagePaths = list()
         self.extract_ImageData()
         self.extract_NotesData()
+        self.extract_dbData()
+
+    # Helper function that formats data in SQLite tables
+    def clean_db_data(self, i):
+        if i is None:
+            new_val = "N/A"
+        elif isinstance(i, int) or isinstance(i, float) or isinstance(i, unicode):
+            try:
+                new_val = str(i)
+            except:
+                new_val = u''.join(i).encode('utf-8').strip()
+        elif isinstance(i, buffer):
+            new_val = ''.join("{:02x}".format(ord(c)) for c in i)
+        else:
+            new_val = u''.join(i).encode('utf-8').strip()
+
+        return new_val
+
+    def extract_dbData(self):
+        self.db_dict = dict()
+
+        dbsdirectory = os.path.join(self.directoryExtracted, "DBs")
+
+        for sqlDB in os.listdir(dbsdirectory):
+            if sqlDB[-3:] == "sql" or sqlDB[-8:] == "sqlitedb" or sqlDB[-6:] == "sqlite" or sqlDB[-2:] == "db":
+
+                fullpath_sqlDB = os.path.join(dbsdirectory, sqlDB)
+
+                conn = sqlite3.connect(fullpath_sqlDB)
+                c = conn.cursor()
+
+                # print "---------- READING ----------" 
+                # print "\t\t" + sqlDB
+                try:
+                    for row in c.execute("SELECT name FROM sqlite_master WHERE type='table';"):
+                        # Separates name of DB file's path and name
+                        sql_dict_name = sqlDB.split("~")[0] + " " + sqlDB.split("~")[1]
+
+                        # Add DB name to dictionary if it can be opened - AKA after a query is executed on the file
+                        if sql_dict_name not in self.db_dict:
+                            self.db_dict[sql_dict_name] = dict()
+
+                        # Get each table name and add it to the dictionary
+                        table_name = str(row[0])
+                        # print "\t\tTable: " + table_name
+
+                        if table_name not in self.db_dict[sql_dict_name]:
+                            # Each table will have column names and table data added in a list format
+                            self.db_dict[sql_dict_name][table_name] = list()
+
+                        # Will contain all table data
+                        table_data = list() 
+                        
+                        # Table Cursor - used to get all info in table
+                        table_c = conn.cursor()
+                        for table_row in table_c.execute("SELECT * FROM %s" % table_name ):
+                            # Format all table data - most in unicode that is then converted to str
+                            # self.clean_db_data - helper function that formats data
+                            temp = list()
+
+                            for item in table_row:
+                                temp.append( self.clean_db_data(item) )
+
+                            table_data.append( temp )
+
+                        # Get all column names
+                        col_names = [str(description[0]) for description in table_c.description]
+
+                        # Adding column names and all table data to dictionary
+                        self.db_dict[sql_dict_name][table_name].append( [col_names, table_data] )
+
+                except:
+                    pass
+                    # print "****** Could not read: " + sqlDB
+
+    def returnDBdata(self):
+        return self.db_dict
 
     def extract_NotesData(self):
 

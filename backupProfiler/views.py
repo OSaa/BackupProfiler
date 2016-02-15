@@ -193,13 +193,14 @@ class ViewsHandler():
 	def createBackup(self, request):
 		if request.method == "POST":
 			if request.POST['createBackup']:
-				backup_location = iosRecovery.main( request.POST['createBackup'] )
+				extract_location = iosRecovery.main( request.POST['createBackup'] )
 
 				# Return already exists message to user/web app for user to know
-				if backup_location == "Already Exists":
-					print backup_location
+				if extract_location == "Already Exists":
+					print "Backup: " + extract_location + " already exists."
+				
 				else:
-					self.update( backup_location )
+					self.update( extract_location )
 
 	@csrf_exempt
 	def overviewPage(self, request):
@@ -325,6 +326,12 @@ class ViewsHandler():
 		notesTitles = self.extractor.returnNotesTitles()
 
 		return render_to_response("NotesTemplate.html", {"notestitles": notesTitles, "keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec } )
+
+	def dbsPage(self, request):
+
+		dbsData = self.extractor.returnDBdata()
+
+		return render_to_response("DBsTemplate.html", {"dbsData": dbsData, "keychainData":self.keychainData, "wifiData":self.wifiData, "all_backups":self.all_backups, "safari_data":self.safariData, "snap_friends":self.snap_friends, "snap_data":self.snap_data, "hopstop_data":self.hopstop_data, "hostop_rec":self.hostop_rec } )
 
 
 

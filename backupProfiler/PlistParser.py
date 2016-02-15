@@ -20,6 +20,7 @@ import strftime_1900
 
 class PlistParser():
 	def __init__(self, backup):
+		print "Running PlistParser.py"
 		self.all_plist_data = list()
 		self.encryptedDict = dict()
 
@@ -64,7 +65,8 @@ class PlistParser():
 							self.all_plist_data.append( [filename, self.plist_list] )	# [ Plist Filename, [list of all data] ]
 							
 					except:
-						print "Error reading: " + plistPath
+						pass
+						# print "Error reading: " + plistPath
 
 
 
@@ -105,7 +107,8 @@ class PlistParser():
 							count += 1
 
 				except:
-					print "Keychain File Error"
+					pass
+					# print "Keychain File Error"
 
 
 		return self.keychain_dict
@@ -190,7 +193,8 @@ class PlistParser():
 					wifi_data_list = self.returnWifiPlistData(data, wifi_data_list)
 
 				except:
-					print "Error reading wifi Plist"
+					pass
+					# print "Error reading wifi Plist"
 
 
 		return wifi_data_list

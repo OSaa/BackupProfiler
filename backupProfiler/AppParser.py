@@ -13,6 +13,7 @@ import collections
 class BackupParser():
 
 	def __init__(self, backup):
+		print "Running AppParser.py"
 		self.backupDir = backup
 
 		# App Name -- App Folder Name -- Status -- Installed -- Last Used -- Number of times used(Maybe)
@@ -163,7 +164,7 @@ class BackupParser():
 				tryFile = plistlib.readPlist(self.backupDir + "/" + filename)
 				return tryFile
 			except:
-				print "Error reading file: " + filename
+				# print "Error reading file: " + filename
 				pass
 
 	def mobilemeApp2(self, plistName, folder):
@@ -186,7 +187,8 @@ class BackupParser():
 			self.allAppBasicData[folder] = [appName, folder, pre, appData["installDate"], appData["lastUsed"], appData["numOfTimesUsed"]]
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def mobileMeApp(self, plistName, folder):
 
@@ -216,7 +218,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def iStudiezApp(self, plistName, folder):
 		
@@ -256,7 +259,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def fbMessengerApp(self, plistName, folder):
 
@@ -290,7 +294,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def sunRiseApp(self, plistName, folder):
 
@@ -356,7 +361,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def googleMapApp(self, plistName, folder):
 
@@ -411,7 +417,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def mixologistApp(self, plistName, folder):
 		try:
@@ -462,7 +469,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def APnewsApp(self, plistName, folder):
 		try:
@@ -519,7 +527,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def fitnessPalApp(self, plistName, folder):
 		try:
@@ -553,7 +562,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + plistName
+			pass
+			# print "Error reading: " + plistName
 
 	def FBapp(self, plistName, folder):
 		try:
@@ -593,7 +603,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def sudokuApp(self, plistName, folder):
 		try:
@@ -647,7 +658,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def MailApp(self, plistName, folder):
 		try:
@@ -684,7 +696,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + plistName
+			pass
+			# print "Error reading: " + plistName
 
 	def HopStopApp(self, plistName, folder):
 		try:
@@ -750,7 +763,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def grubHubApp(self, plistName, folder):
 		try:
@@ -788,7 +802,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def irisApp(self, plistName, folder):
 		try:
@@ -825,7 +840,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def instaApp(self, plistName, folder):
 		try:
@@ -909,7 +925,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def snapChatApp(self, plistName, folder):
 		try:
@@ -1000,7 +1017,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def linkedInApp(self, plistName, folder):
 		try:
@@ -1050,7 +1068,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def whatsApp(self, plistName, folder):
 		try:
@@ -1104,7 +1123,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def seamlessApp(self, plistName, folder):
 		try:
@@ -1156,7 +1176,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def appleMapApp(self, plistName, folder):
 		try:
@@ -1188,7 +1209,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + plistName
+			pass
+			# print "Error reading: " + plistName
 
 	def safarApp(self, plistName, folder):
 		try:
@@ -1227,7 +1249,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def openTableApp(self, plistName, folder):
 		try:
@@ -1290,7 +1313,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def bbcApp(self, plistName, folder):
 
@@ -1322,7 +1346,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + plistName
+			pass
+			# print "Error reading: " + plistName
 
 	def backgammonApp(self, plistName, folder):
 		try:
@@ -1366,7 +1391,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + plistName
+			pass
+			# print "Error reading: " + plistName
 
 	def dictApp(self, plistName, folder):
 		try:
@@ -1407,7 +1433,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + plistName
+			pass
+			# print "Error reading: " + plistName
 
 	def yelpApp(self, plistName, folder):
 		try:
@@ -1448,7 +1475,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + plistName
+			pass
+			# print "Error reading: " + plistName
 
 	def tedApp(self, plistName, folder):
 		try:
@@ -1478,7 +1506,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def followersApp(self, plistName, folder):
 		try:
@@ -1518,7 +1547,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def cnnApp(self, plistName, folder):
 		try:
@@ -1555,7 +1585,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def yahooWeatherApp(self, plistName, folder):
 		try:
@@ -1591,7 +1622,8 @@ class BackupParser():
 
 			return appData
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def recSearches(self, plistName):
 		try:
@@ -1609,7 +1641,8 @@ class BackupParser():
 
 			return appData
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def gasBuddyApp(self, plistName, folder):
 		try:
@@ -1652,7 +1685,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def numbersApp(self, plistName, folder):
 		try:
@@ -1679,7 +1713,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def undergroundWeatherApp(self, plistName, folder):
 		try:
@@ -1695,7 +1730,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def appleStoreApp(self, plistName, folder):
 		try:
@@ -1723,7 +1759,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def uefaApp(self, plistName, folder):
 		try:
@@ -1736,7 +1773,8 @@ class BackupParser():
 				lifecylelog = pfileInfo.get("com.tealium.lifecyclelog")
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def myRadarApp(self, plistName, folder):
 		try:
@@ -1747,7 +1785,8 @@ class BackupParser():
 			if pfileInfo.get("storedLocations"):
 				locations = pfileInfo.get("storedLocations")
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def bloombergApp(self, plistName, folder):
 		try:
@@ -1779,7 +1818,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def hopperApp(self, plistName, folder):
 		try:
@@ -1812,7 +1852,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def amazonApp(self, plistName, folder):
 		try:
@@ -1852,7 +1893,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def mintApp(self, plistName, folder):
 		try:
@@ -1885,7 +1927,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def uberApp(self, plistName, folder):
 		try:
@@ -1921,7 +1964,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def dunkinApp(self, plistName, folder):
 		try:
@@ -1965,7 +2009,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def groupMeApp(self, plistName, folder):
 		try:
@@ -2022,7 +2067,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def hangApp(self, plistName, folder):
 		try:
@@ -2050,7 +2096,8 @@ class BackupParser():
 			return appData
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def jetblueApp(self, plistName, folder):
 		try:
@@ -2078,7 +2125,8 @@ class BackupParser():
 			self.allAppBasicData[folder] = [appName, folder, pre, appData["installDate"], appData["lastUsed"], appData["numOfTimesUsed"]]
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 	def getArbInstalled(self, plistName, folder):
 		try:
@@ -2109,7 +2157,8 @@ class BackupParser():
 			self.allAppBasicData[folder] = [appName, folder, pre, appData["installDate"], appData["lastUsed"], appData["numOfTimesUsed"]]
 
 		except:
-			print "Error reading: " + folder
+			pass
+			# print "Error reading: " + folder
 
 
 	def info_plist_parser(self):
