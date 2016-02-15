@@ -87,18 +87,18 @@
 
 				      $("#WiFiName").text(wirelessSelected)
 
-		          		$('#wifiTable').remove()
-		          		$("#wifiTable_wrapper").remove()
-		          		newTable = "<table cellpadding='0' cellspacing='0' border='0' class='display' id='wifiTable'></table>"
+		          	  $('#wifiTable').remove()
+		          	  $("#wifiTable_wrapper").remove()
+		          	  newTable = "<table cellpadding='0' cellspacing='0' border='0' class='display' id='wifiTable'></table>"
 
-		          		$('#table').append(newTable)
+		          	  $('#table').append(newTable)
 		          		
-		          		$('#wifiTable').dataTable( {
-					        "data": tableData,
-					        "columns": [
-					            { "title": "Key" },
-					            { "title": "Value" }
-					        ],
+		          	  $('#wifiTable').dataTable( {
+					      "data": tableData,
+					      "columns": [
+					          { "title": "Key" },
+					          { "title": "Value" }
+					      ],
 					   } );
 		          		
 		          	}
@@ -139,6 +139,7 @@
 		              <li><a href="{% url 'calldata' %}">Call History</a></li>
 		              <li><a href="{% url 'calendardata' %}">Calendar</a></li>
 		              <li><a href="{% url 'notesdata' %}">Notes</a></li>
+		              <li><a href="{% url 'images' %}">Images</a></li>
 		            </ul>
 		            <ul class="nav nav-sidebar">
 		              <li><a href="{% url 'appdata' %}">App Data</a></li>
@@ -164,7 +165,7 @@
 		              {% endif %}
 		            </ul>
 		            <ul class="nav nav-sidebar">
-		              <li><a href="{% url 'images' %}">Images</a></li>
+		              <li><a href="{% url 'dbs' %}">Databases</a></li>
 		            </ul>
 		          
 		        </div><!--/span-->
