@@ -1,0 +1,274 @@
+<!DOCTYPE HTML>
+<html>
+	
+	{% include "dependencies.html" %}
+	
+	<script type="text/javascript">
+		$( document ).ready(function() {
+
+			var jsonData
+
+			temp_array = new Array( {{ dbsData|safe }} )
+
+			for (var i = 0; i < temp_array.length; i++) {
+				jsonData = temp_array[i];
+			}
+
+			// Create dropdown menu of DB names
+			if (jsonData.length != 0){
+
+				for (var key in jsonData){
+					newitem = "<li><a class='dropdownitems' id=" + key + " href=''>" + key + "</a></li>" 
+					$("#DBList").append(newitem);
+		        }
+
+		    }else{
+				newitem = "<li><a>None</a></li>"
+				$("#DBList").append(newitem);
+			}
+
+			// Helper variables
+			var list_items = ""
+			var div_items = ""
+			var previousSelection = ""
+			var old_loc_dbname = ""
+
+			$("#DBList").click(function(event) {
+				// Prevents data on page from disapearing after click
+				event.preventDefault();
+
+				DBselected = $(event.target).text()
+
+				// If currently chosen DB is the same as previous, ignore
+				if (DBselected == previousSelection){
+					// Close dropdown
+					$('.dropdown.open .dropdown-toggle').dropdown('toggle');
+
+					// Do nothing on select
+					return false;
+				}
+
+				$("#DBname").text(DBselected)
+
+				// Remove previously created tables and tabs
+				if(previousSelection.length != 0){
+					for (var old_db_table in jsonData[previousSelection]){
+						// Removing Tables with their respective wrappers (Pagination)
+						$("#" + old_db_table + "Table").remove()
+						$("#" + old_db_table + "Table_wrapper").remove()
+					}
+					// Next, remove divs containing tables
+					$(".divAdded").remove()
+
+					// Remove div containing all tab contents
+					$("div .tab-content").remove()
+
+					// Remove a in li elements
+					// $(".allNavs").remove()
+					$("a").find("."+old_loc_dbname).remove()
+
+					// Remove li
+					// $(".allLI").remove()
+					$("li").find("."+old_loc_dbname).remove()
+
+					// Remove the ul nav itself
+					$("#tablenav").remove()
+
+					// Remove the tabsection container
+					$("#tabsection").remove()
+
+					$("."+old_loc_dbname).remove()
+					$("#"+old_loc_dbname).remove()
+
+					// If there are remaning previously selected items, remove them
+					while ($("."+old_loc_dbname).length != 0){
+						$("."+old_loc_dbname).remove()
+					}
+				}
+
+				// Create a unique name for app and db
+				var splitDB = DBselected.split(" ")
+				var loc_name = ""
+
+				if (splitDB[0].split(".").length > 1){
+					loc_name = splitDB[0].split(".")[splitDB[0].split(".").length-1]
+				}else{
+					loc_name = splitDB[0]
+				}
+
+				var db_name = splitDB[1].split(".")[0]
+				var loc_dbname = loc_name + db_name
+
+				count = 0 
+				for(var db_table in jsonData[DBselected]){
+
+					newTable = "<table cellpadding='0' cellspacing='0' border='0' class='display' id='" + db_table + "Table'></table>"
+
+					// Create Tabs
+					if (count == 0){
+						// First tab will be active
+						list_items += "<li class='active "+loc_dbname+"'><a href='#" + db_table + "' class='"+loc_dbname+"' data-toggle='tab'>" + db_table + "</a></li>"
+						div_items += "<div class='tab-pane active "+loc_dbname+"' id='"+db_table+"'><br/><div class='"+loc_dbname+"' style='overflow:auto;'>" + newTable + "</div></div>"
+						count += 1
+					}else{
+						// Rest will not be active
+						list_items += "<li class='"+loc_dbname+"' ><a href='#" + db_table + "' class='"+loc_dbname+"' data-toggle='tab'>" + db_table + "</a></li>"
+						div_items += "<div class='tab-pane "+loc_dbname+"' id='"+db_table+"'><br/><div class='"+loc_dbname+"' style='overflow:auto;'>" + newTable + "</div></div>"
+					}
+
+				}
+
+				// Creating HTML elements containing new DB info
+				$(".placeholders").append('<div id="tabsection"></div>')
+
+				// Append tabs to div
+				$("#tabsection").append("<ul class='nav nav-pills' id='" + loc_dbname + "' data-tabs='tabs'>" + list_items + "</ul> <div class='tab-content'>" + div_items + "</div>")
+
+				var seen = {};
+				$('a.' + loc_dbname).each(function() {
+					var txt = $(this).text();
+					if (seen[txt]){
+						$(this).remove();
+				    }else{
+				        seen[txt] = true;
+				    }
+				});
+
+				seen = {};
+
+				$('#' + loc_dbname + ' li a').click(function (e) {
+					$('ul.nav-pills li.active').removeClass('active')
+					$(this).parent('li').addClass('active')
+				})
+
+				// Create datatables for new tables
+				for(var db_table in jsonData[DBselected]){
+
+					columns = jsonData[DBselected][db_table][0][0]
+					table_data = jsonData[DBselected][db_table][0][1]
+
+					dataObject = '[{"COLUMNS":['
+
+					for (var i in columns){
+						if (i == columns.length){
+							dataObject += "{ 'title': '"+columns[i]+"' }"
+						}else{
+							dataObject += "{ 'title': '"+columns[i]+"' },"
+						}
+					}
+					dataObject += ']}]'
+
+					dataObject = eval(dataObject)
+					
+					$('#' + db_table + 'Table').dataTable( {
+						"data": table_data,
+						"columns": dataObject[0].COLUMNS,
+						"columnDefs": [
+							{ "width": "20%", "targets": 0 }
+						]
+					});
+				}
+
+				// Second check - If there are remaning previously selected items, remove them
+				if(previousSelection.length != 0){
+					while ($("li."+old_loc_dbname).length != 0){
+						$("li."+old_loc_dbname).remove()
+					}
+					$('.nav-pills li').not('li.'+loc_dbname).remove();
+				}
+
+				// Keep track of last selected item
+				previousSelection = DBselected
+				old_loc_dbname = loc_dbname
+			});
+
+
+	    });
+	</script>
+	<style>
+		.scrollable-menu {
+			height: auto;
+			max-height: 200px;
+			overflow-x: hidden;
+		}
+	</style>
+    <body>
+    	{% include "nav.html" %}
+
+		<div class="container-fluid">
+		      
+		      <div class="row row-offcanvas row-offcanvas-left">
+		        
+		         <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+		           
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'overview' %}">Overview</a></li>
+		              <li><a href="{% url 'top10' %}">Top 10</a></li>
+		              <li><a href="{% url 'smsdata' %}">SMS History</a></li>
+		              <li><a href="{% url 'calldata' %}">Call History</a></li>
+		              <li><a href="{% url 'calendardata' %}">Calendar</a></li>
+		              <li><a href="{% url 'notesdata' %}">Notes</a></li>
+		              <li><a href="{% url 'images' %}">Images</a></li>
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              <li><a href="{% url 'appdata' %}">App Data</a></li>
+		              <li><a href="{% url 'appspecific' %}">App Specifics</a></li>
+		              <li><a href="{% url 'accounts' %}">Accounts</a></li>
+		              <li><a href="{% url 'appplists' %}">App Plists</a></li>
+		            </ul>
+		            <ul class="nav nav-sidebar">
+		              {% if safari_data %}
+		              <li><a href="{% url 'safaridata' %}">Safari Searches</a></li>
+		              {% endif %}
+		              {% if snap_friends or snap_data %}
+		              <li><a href="{% url 'snapdata' %}">Snapchat</a></li>
+		              {% endif %}
+		              {% if hopstop_data or hopstop_rec %}
+		              <li><a href="{% url 'hopstopdata' %}">HopStop</a></li>
+		              {% endif %}
+		            </ul>
+		            {% if wifiData or keychainData %}
+		            <ul class="nav nav-sidebar">
+		              {% if wifiData %}
+		              <li><a href="{% url 'wifi' %}">WiFi</a></li>
+			          {% endif %}
+			          {% if keychainData %}
+		              <li><a href="{% url 'keychain' %}">Keychain</a></li>
+		              {% endif %}
+		            </ul>
+		            {% endif %}
+		            <ul class="nav nav-sidebar">
+		            	<li class="active"><a href="{% url 'dbs' %}">Databases</a></li>
+		            </ul>
+		          
+		        </div><!--/span-->
+		        
+		        <div class="col-sm-9 col-md-10 main">
+				  <h1 class="page-header">
+						Database Data
+		          </h1>
+		          <div class="row placeholders">
+		          	
+					<div class="dropdown">
+					  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    Database List
+					    <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu scrollable-menu" id="DBList" aria-labelledby="dropdownMenu1">
+					  </ul>
+					</div>
+					
+					<h3 id="DBname"></h3>
+					<br/>
+
+					<div id="tabsection">
+						<!-- Add Tabs Here -->
+					</div>
+
+		          </div>
+		      </div><!--/row-->
+
+			</div>
+		</div><!--/.container-->
+ 	</body>
+</html>
